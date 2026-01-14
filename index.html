@@ -1,454 +1,673 @@
-import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, Compass, Users, User, Lightbulb, Target, Briefcase, ArrowRight } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kevin's IP Strategy v2.2</title>
+    <style>
+        /* 基础重置与变量 */
+        :root {
+            --bg-black: #000000;
+            --bg-slate-900: #0f172a;
+            --bg-slate-800: #1e293b;
+            --bg-slate-700: #334155;
+            --text-slate-100: #f1f5f9;
+            --text-slate-200: #e2e8f0;
+            --text-slate-300: #cbd5e1;
+            --text-slate-400: #94a3b8;
+            --text-slate-500: #64748b;
+            --text-slate-600: #475569;
+            --amber-500: #f59e0b;
+            --amber-400: #fbbf24;
+            --amber-900-20: rgba(120, 53, 15, 0.2);
+            --red-400: #f87171;
+            --red-500-30: rgba(239, 68, 68, 0.3);
+            --red-900-20: rgba(127, 29, 29, 0.2);
+            --emerald-300: #6ee7b7;
+            --emerald-400: #34d399;
+            --emerald-500: #10b981;
+            --emerald-500-30: rgba(16, 185, 129, 0.3);
+            --emerald-900-20: rgba(6, 78, 59, 0.2);
+            --rose-400: #fb7185;
+            --rose-500-20: rgba(244, 63, 94, 0.2);
+            --blue-400: #60a5fa;
+            --blue-500-20: rgba(59, 130, 246, 0.2);
+        }
 
-const Slide = ({ children, title, subtitle, current, index }) => {
-  if (current !== index) return null;
-  return (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-100 p-8 overflow-y-auto">
-      <div className="mb-6 border-b border-amber-500/50 pb-4 flex justify-between items-end">
-        <div>
-           <h2 className="text-3xl font-bold text-amber-500 tracking-tight">{title}</h2>
-           {subtitle && <p className="text-slate-400 font-medium mt-2 text-lg">{subtitle}</p>}
-        </div>
-        <div className="text-slate-600 text-xs font-mono">KEVIN'S IP STRATEGY v2.1</div>
-      </div>
-      <div className="flex-1">
-        {children}
-      </div>
-    </div>
-  );
-};
-
-const Presentation = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 8;
-
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-
-  return (
-    <div className="w-full h-screen bg-black flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-5xl h-[700px] bg-slate-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-800">
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        {/* Content Area */}
-        <div className="flex-1 relative overflow-hidden">
-          
-          {/* SLIDE 0: Core Positioning */}
-          <Slide current={currentSlide} index={0} title="IP 核心定位" subtitle="认知降维打击：解决“离钱太远”的痛点">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center">
-              <div className="space-y-6">
-                 <div className="bg-red-900/20 p-4 rounded-lg border border-red-500/30">
-                    <h4 className="text-red-400 font-bold mb-2 flex items-center gap-2">❌ 痛点现状</h4>
-                    <p className="text-slate-300 text-sm">以前内容太“雅”（纯讲书、历史、佛学），显得离“钱”和“事业”太远，用户可能把你当老师，金融专家人设弱化了。</p>
-                 </div>
-                 
-                 <div className="bg-emerald-900/20 p-4 rounded-lg border border-emerald-500/30">
-                    <h4 className="text-emerald-400 font-bold mb-2 flex items-center gap-2">✅ 升级策略</h4>
-                    <p className="text-slate-300 text-sm">
-                        不做“掉书袋”的文人，做<span className="text-emerald-300 font-bold">“懂人文的财富守护者”</span>。
-                        <br/>每一个文化话题，最后都可“落地”到财富观或职业选择。
-                    </p>
-                 </div>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-slate-100);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* 防止 Body 滚动 */
+        }
 
-                 <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-amber-500">核心人设 (Persona)</h3>
-                    <p className="text-2xl font-serif text-slate-100 italic">“金融圈的认知引路人”</p>
-                    <div className="flex gap-2 mt-2">
-                        {['博学', '儒雅', '通透', '长期主义', '家庭感'].map((tag) => (
-                            <span key={tag} className="px-2 py-1 bg-slate-700 rounded text-xs text-slate-300">{tag}</span>
-                        ))}
-                    </div>
-                 </div>
-              </div>
+        /* 主容器 - 关键修复：移动端高度适配 */
+        .app-container {
+            width: 100%;
+            max-width: 1024px;
+            height: 700px; /* 桌面端固定高度 */
+            background-color: var(--bg-slate-900);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--bg-slate-800);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
 
-              <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-xl flex flex-col justify-center">
-                 <h3 className="text-lg font-bold mb-6 text-amber-400 flex items-center gap-2">
-                    <Compass size={20}/> 差异化竞争
-                 </h3>
-                 <div className="space-y-8">
-                    <div className="flex gap-4">
-                        <div className="w-1/2 opacity-50">
-                            <h4 className="text-slate-400 font-bold border-b border-slate-600 pb-2 mb-2">普通保险IP</h4>
-                            <p className="text-sm text-slate-500">晒MDRT奖杯</p>
-                            <p className="text-sm text-slate-500">晒表彰大会</p>
-                            <p className="text-sm text-slate-500">喊热血口号</p>
-                        </div>
-                        <div className="w-1/2">
-                            <h4 className="text-amber-400 font-bold border-b border-amber-600 pb-2 mb-2">Kevin 的IP</h4>
-                            <p className="text-sm text-slate-200">讲《雪国》与无常</p>
-                            <p className="text-sm text-slate-200">讲宋画与审美</p>
-                            <p className="text-sm text-slate-200">讲宏观经济周期</p>
-                        </div>
-                    </div>
-                    <div className="p-4 bg-amber-500/10 rounded-lg text-amber-200 text-sm text-center font-bold">
-                        “用高认知高质量内容，筛选掉了那些只想赚快钱的人，<br/>留下了真正的高净值客户和精英人才。”
-                    </div>
-                 </div>
-              </div>
-            </div>
-          </Slide>
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
 
-          {/* SLIDE 1: New Bio Card */}
-          <Slide current={currentSlide} index={1} title="个人简介优化" subtitle="让陌生人一眼看懂“我是谁”">
-            <div className="flex justify-center items-center h-full">
-                <div className="w-full max-w-3xl bg-slate-800 rounded-xl overflow-hidden shadow-2xl border border-slate-700 flex flex-col md:flex-row">
-                    
-                    {/* Left: Image Placeholder */}
-                    <div className="w-full md:w-2/5 bg-slate-700 relative group">
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                            <User size={64} className="mb-4" />
-                            <span className="text-xs uppercase tracking-widest">Profile Image</span>
-                            <span className="text-[10px] text-slate-500 px-4 text-center mt-2">建议：穿有质感的衬衫/开衫，背景可是书架或者会所，眼神睿智温和。</span>
-                        </div>
-                    </div>
+        /* 滚动条样式 */
+        .slide-content {
+            padding: 0 2rem 2rem 2rem;
+            overflow-y: auto; /* 允许内部内容滚动 */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+        }
+        .slide-content::-webkit-scrollbar { width: 4px; }
+        .slide-content::-webkit-scrollbar-track { background: transparent; }
+        .slide-content::-webkit-scrollbar-thumb { background: var(--bg-slate-700); border-radius: 4px; }
 
-                    {/* Right: Text Content */}
-                    <div className="w-full md:w-3/5 p-8 flex flex-col justify-center">
-                        <h2 className="text-3xl font-bold text-white mb-1">陈云凯 | Kevin</h2>
-                        <p className="text-amber-500 font-medium mb-6">10年TOT保险人 · 行万里路的读书人</p>
-                        
-                        <div className="relative mb-8">
-                            <div className="absolute -left-3 -top-2 text-4xl text-slate-600 opacity-30">“</div>
-                            <p className="text-slate-300 text-lg leading-relaxed italic pl-2">
-                                用历史的望远镜看清财富的终局，<br/>用长期主义经营人生。
-                            </p>
-                        </div>
+        /* 头部样式 */
+        .header-wrapper {
+            padding: 2rem 2rem 0 2rem;
+            flex-shrink: 0;
+            background-color: var(--bg-slate-900);
+            z-index: 10;
+        }
+        .header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.5);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .header h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--amber-500);
+            line-height: 1.2;
+        }
+        .header p {
+            color: var(--text-slate-400);
+            font-weight: 500;
+            margin-top: 0.5rem;
+            font-size: 1.125rem;
+        }
+        .version-tag {
+            color: var(--text-slate-600);
+            font-size: 0.75rem;
+            font-family: monospace;
+            white-space: nowrap;
+        }
 
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                                <span className="text-slate-300 text-sm">香港保险 TOT 顶尖会员</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                                <span className="text-slate-300 text-sm">艺术鉴赏与宏观经济研究</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                                <span className="text-slate-300 text-sm">终身阅读者 & 知识策展人</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
-                                <span className="text-slate-300 text-sm">百人冠军团队招募导师</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="text-center mt-6 text-slate-500 text-sm">
-                *此卡片可作为视频号置顶封面、微信朋友圈背景图、直播间贴片。
-            </div>
-          </Slide>
+        /* 底部导航 */
+        .footer {
+            background-color: var(--bg-slate-900);
+            border-top: 1px solid var(--bg-slate-800);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .dots { display: flex; gap: 0.5rem; }
+        .dot {
+            width: 0.5rem; height: 0.5rem;
+            border-radius: 9999px;
+            background-color: var(--text-slate-600);
+            transition: all 0.3s;
+        }
+        .dot.active { background-color: var(--amber-500); transform: scale(1.2); }
 
-          {/* SLIDE 2: Strategic Pivot */}
-          <Slide current={currentSlide} index={2} title="内容策略：落脚点思维" subtitle="从“纯讲书”到“借书谈事业”的逻辑跃迁">
-             <div className="flex flex-col items-center justify-center h-full">
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 opacity-60">
-                        <h3 className="text-xl font-bold text-slate-400 mb-4">第一阶段：纯讲书</h3>
-                        <p className="text-sm text-slate-500 mb-2">话题：历史、艺术、佛学</p>
-                        <p className="text-sm text-slate-500 mb-2">结果：粉丝爱听，但觉得你只是个博主，无法转化为客户/合伙人。</p>
-                        <div className="mt-4 p-2 bg-black/20 rounded text-xs text-center">只有流量，没有留量</div>
-                    </div>
+        .nav-btn {
+            width: 44px; height: 44px; /* 更大的点击区域 */
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        .nav-btn-prev { background: transparent; color: var(--text-slate-400); }
+        .nav-btn-prev:hover { background-color: var(--bg-slate-800); }
+        .nav-btn-next {
+            background-color: var(--amber-500);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .nav-btn-next:active { background-color: #d97706; transform: scale(0.95); }
 
-                    <div className="flex items-center justify-center">
-                        <ArrowRight className="w-12 h-12 text-amber-500" />
-                    </div>
-
-                    <div className="bg-gradient-to-br from-amber-900/30 to-slate-800 p-6 rounded-xl border border-amber-500/50">
-                        <h3 className="text-xl font-bold text-amber-400 mb-4">第二阶段：借题发挥</h3>
-                        <p className="text-sm text-slate-300 mb-2">话题：历史 ➔ 周期 ➔ 财富</p>
-                        <p className="text-sm text-slate-300 mb-2">结果：用文化话题把人引进来，最后钩连到<span className="text-white font-bold">“财富观”、“风险管理”或“职业选择”</span>。</p>
-                        <div className="mt-4 p-2 bg-amber-500/20 text-amber-300 rounded text-xs text-center font-bold">既有高度，又有转化</div>
-                    </div>
-                </div>
-
-                <div className="mt-12 w-full max-w-4xl bg-slate-800 p-6 rounded-lg border-l-4 border-amber-500">
-                    <h4 className="text-white font-bold mb-2 flex items-center gap-2">
-                        <Lightbulb className="text-amber-500" size={20}/> 
-                        解析
-                    </h4>
-                    <p className="text-slate-300 text-sm">
-                        Kevin 不需要抛弃喜欢的历史和艺术，那是IP的灵魂。
-                        我们要做的只是改变“结尾那10%”。
-                        比如讲完宋代名画，以前是感叹“美”，现在要感叹“美需要财富守护”或者“古人面对无常的智慧，就是现代人的保险思维”。
-                    </p>
-                </div>
-             </div>
-          </Slide>
-
-          {/* SLIDE 3: Content Pillar 1 - Macro (40%) */}
-          <Slide current={currentSlide} index={3} title="支柱一：宏观与财富 (40%)" subtitle="展示专业硬实力：利用《金钱的艺术》素材库">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
-                
-                {/* Strategy */}
-                <div className="space-y-6">
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h3 className="font-bold text-amber-400 mb-2">核心素材</h3>
-                        <p className="text-slate-300 text-sm">
-                            利用已有的演讲稿《金钱的艺术》，结合时事（如日本债务、芯片解禁）。
-                            这是展示TOT专业度和认知维度。
-                        </p>
-                    </div>
-
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h3 className="font-bold text-amber-400 mb-2">转化逻辑：尾部事件</h3>
-                        <div className="space-y-3">
-                            <p className="text-xs text-slate-500 uppercase">Case Study 1</p>
-                            <p className="text-slate-200 font-bold text-sm">迪士尼/光线传媒的“爆发点”</p>
-                            <div className="p-3 bg-black/30 rounded border-l-2 border-emerald-500">
-                                <p className="text-slate-400 text-xs italic">
-                                    “在投资里，99%的时间是平庸的，只有1%的尾部事件决定了成败。
-                                    **做保险事业也是如此。** 我们把自己当成一家公司经营，大部分时间在积累，但只要你不下牌桌，等待那个积累后的爆发点，时间就是你的朋友。”
-                                </p>
-                            </div>
-                            <p className="text-emerald-400 text-xs font-bold text-right">➔ 钩连：职业选择与长期主义</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Example 2 */}
-                <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col justify-between">
-                    <div>
-                        <h3 className="font-bold text-amber-400 mb-2">转化逻辑：守富</h3>
-                        <div className="space-y-3">
-                            <p className="text-xs text-slate-500 uppercase">Case Study 2</p>
-                            <p className="text-slate-200 font-bold text-sm">巴菲特的“防御性智慧”</p>
-                            <p className="text-slate-300 text-sm">
-                                讲述巴菲特为什么能穿越无数次经济危机。引出“致富靠进攻，守富靠防守”。
-                            </p>
-                            <div className="p-3 bg-black/30 rounded border-l-2 border-emerald-500">
-                                <p className="text-slate-400 text-xs italic">
-                                    “中产阶级最大的风险不是赚不到钱，而是守不住钱。保险在资产配置中的地位，就是那个让你在危机中依然能睡得着觉的‘防御性资产’。”
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <p className="text-emerald-400 text-xs font-bold text-right mt-4">➔ 钩连：保险产品的必要性</p>
-                </div>
-            </div>
-          </Slide>
-
-          {/* SLIDE 4: Content Pillar 2 - Humanities (30%) */}
-          <Slide current={currentSlide} index={4} title="支柱二：人文与人性 (30%)" subtitle="筛选同频人：用高级感建立灵魂共鸣">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
-                
-                <div className="space-y-6">
-                     <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h3 className="font-bold text-amber-400 mb-2">核心素材</h3>
-                        <p className="text-slate-300 text-sm">
-                            历史兴衰、艺术审美、佛学智慧。
-                            <br/>目的：维持高质量输出，让高知人群觉得“这个人懂我”。
-                        </p>
-                    </div>
-
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                        <h3 className="font-bold text-amber-400 mb-2">转化逻辑：无常与确幸</h3>
-                        <div className="space-y-3">
-                            <p className="text-xs text-slate-500 uppercase">Case Study 1</p>
-                            <p className="text-slate-200 font-bold text-sm">《雪国》或 宋代《秉烛夜游图》</p>
-                            <div className="p-3 bg-black/30 rounded border-l-2 border-emerald-500">
-                                <p className="text-slate-400 text-xs italic">
-                                    “川端康成笔下的雪国有一种虚无之美，古人感叹人生苦短，所以秉烛夜游。
-                                    **而保险本质上，就是为了让我们在无常的生命里，拥有一份确定的心安**，让我们能像古人一样，抛开后顾之忧，从容地享受当下的秉烛夜游。”
-                                </p>
-                            </div>
-                            <p className="text-emerald-400 text-xs font-bold text-right">➔ 钩连：保险的情感价值</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col">
-                    <h3 className="font-bold text-amber-400 mb-2">转化逻辑：销售心法</h3>
-                    <div className="space-y-3">
-                        <p className="text-xs text-slate-500 uppercase">Case Study 2</p>
-                        <p className="text-slate-200 font-bold text-sm">《心经》与“贪嗔痴”</p>
-                        <p className="text-slate-300 text-sm">
-                            借佛学谈销售心态。高素质人才最怕做销售时的“低声下气”。
-                        </p>
-                        <div className="p-3 bg-black/30 rounded border-l-2 border-emerald-500">
-                            <p className="text-slate-400 text-xs italic">
-                                “只有放下了对成交的执念，才能真正站在客户角度去精进专业。
-                                这也是团队提倡的 **‘不销而销’**。如果你也厌倦了传统销售的压迫感，欢迎来我们这里看看。”
-                            </p>
-                        </div>
-                    </div>
-                    <p className="text-emerald-400 text-xs font-bold text-right mt-auto">➔ 钩连：团队价值观与招募</p>
-                </div>
-            </div>
-          </Slide>
-
-          {/* SLIDE 5: Pillars 3 & 4 - Team & Practice */}
-          <Slide current={currentSlide} index={5} title="支柱三 & 四：团队与实战" subtitle="补齐短板：不仅“务虚”，更会“务实”">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
-                
-                {/* Team & Life (20%) */}
-                <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 h-full flex flex-col">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-rose-500/20 text-rose-400 rounded-lg"><Users size={24}/></div>
-                        <h3 className="font-bold text-xl text-slate-200">【团队与生活】(20%)</h3>
-                    </div>
-                    <p className="text-slate-400 text-sm mb-4">这是目前视频的缺失，但朋友圈做得很好。高素质人才不想要“打鸡血”，向往“有文化”的圈子。</p>
-                    
-                    <div className="space-y-4 flex-1">
-                         <div className="bg-slate-900 p-4 rounded border border-slate-700">
-                            <h4 className="text-amber-400 text-sm font-bold mb-1">内容方向</h4>
-                            <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                <li>高质量读书会现场</li>
-                                <li>夫妻档的工作日常（展示幸福感）</li>
-                                <li>高客交流感悟（展示圈层）</li>
-                            </ul>
-                         </div>
-                         <div className="p-3 bg-black/30 rounded border-l-2 border-rose-500">
-                            <p className="text-slate-400 text-xs italic">
-                                “很多人问我，为什么你的团队里有银行行长、有企业高管？
-                                因为在我们的圈子这里，不仅只是赚世俗的钱，也是滋养灵魂。”
-                            </p>
-                         </div>
-                    </div>
-                </div>
-
-                {/* Practice & Method (10%) */}
-                <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 h-full flex flex-col">
-                     <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg"><Briefcase size={24}/></div>
-                        <h3 className="font-bold text-xl text-slate-200">【实战与方法】(10%)</h3>
-                    </div>
-                    <p className="text-slate-400 text-sm mb-4">偶尔展示保险的专业度。证明你不仅会“务虚”，更擅长“务实”。</p>
-                    
-                     <div className="space-y-4 flex-1">
-                         <div className="bg-slate-900 p-4 rounded border border-slate-700">
-                            <h4 className="text-amber-400 text-sm font-bold mb-1">内容方向</h4>
-                            <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                <li>如何解决复杂的家族信托问题？</li>
-                                <li>2分钟讲清楚降息对钱包的影响</li>
-                                <li>分析一份糟糕的保单（不点名）</li>
-                            </ul>
-                         </div>
-                         <div className="p-3 bg-black/30 rounded border-l-2 border-blue-500">
-                            <p className="text-slate-400 text-xs italic">
-                                “所谓专业，不是堆砌术语，而是用最简单的逻辑，解决最复杂的问题。
-                                这就是我们团队的‘极简专业主义’。”
-                            </p>
-                         </div>
-                    </div>
-                </div>
-
-            </div>
-          </Slide>
-
-          {/* SLIDE 6: Recruitment Logic */}
-          <Slide current={currentSlide} index={6} title="招募逻辑：全方位围猎" subtitle="如何通过IP设计，让高质量人才主动加入？">
-            <div className="flex flex-col items-center h-full">
-                
-                <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-slate-800 p-4 rounded-lg text-center border-t-4 border-amber-500">
-                        <h4 className="font-bold text-slate-200 mb-2">Step 1: 筛选</h4>
-                        <p className="text-xs text-slate-400">通过《金钱的艺术》、宏观经济、佛学智慧等高门槛内容，<br/><strong className="text-amber-400">自动过滤</strong>掉急功近利的人。</p>
-                    </div>
-                    <div className="bg-slate-800 p-4 rounded-lg text-center border-t-4 border-amber-500">
-                        <h4 className="font-bold text-slate-200 mb-2">Step 2: 吸引</h4>
-                        <p className="text-xs text-slate-400">通过“长期主义”、“把保险当公司经营”、“不销而销”的理念，<br/><strong className="text-amber-400">击中</strong>想转型高知人群的痛点。</p>
-                    </div>
-                    <div className="bg-slate-800 p-4 rounded-lg text-center border-t-4 border-amber-500">
-                        <h4 className="font-bold text-slate-200 mb-2">Step 3: 转化</h4>
-                        <p className="text-xs text-slate-400">通过展示“TOT结果”和“百人团队氛围”，证明情怀可以落地，<br/><strong className="text-amber-400">消除</strong>他们对收入的顾虑。</p>
-                    </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-8 rounded-2xl border border-slate-700 w-full flex items-center justify-between">
-                    <div>
-                        <h3 className="text-2xl font-bold text-white mb-2">给 IP 的建议：</h3>
-                        <p className="text-slate-300 italic max-w-2xl">
-                            “Kevin 的招募对象，不是为了底薪而来的人。<br/>
-                            他们是为了寻找一个“精神导师”，寻找一种“有尊严的赚钱方式”。<br/>
-                            <br/>聪明人，也可以用体面的方式，赢取财富。
-                            <span className="text-amber-400 font-bold">”</span>
-                        </p>
-                    </div>
-                    <div className="hidden md:block opacity-20">
-                        <Target size={120} className="text-amber-500" />
-                    </div>
-                </div>
-
-            </div>
-          </Slide>
-
-          {/* SLIDE 7: The Power Couple Strategy */}
-          <Slide current={currentSlide} index={7} title="夫妻档：1+1 > 2" subtitle="如果太太是“前台的火”，你就是“后台的冰”">
-            <div className="flex flex-col items-center justify-center h-full">
-                <div className="relative w-full max-w-4xl">
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 to-blue-900/20 rounded-full blur-3xl"></div>
-                    
-                    <div className="relative grid grid-cols-3 gap-4 items-center">
-                        {/* Wife */}
-                        <div className="text-center p-6 bg-slate-800/80 rounded-xl border border-slate-700">
-                            <div className="text-rose-400 font-bold text-xl mb-2">Lina (TOT)</div>
-                            <div className="text-slate-300 text-sm space-y-2">
-                                <p>感性、温暖、生活</p>
-                                <p>吸引宝妈、职场人</p>
-                                <p>解决“能不能做”的问题</p>
-                            </div>
-                        </div>
-
-                        {/* Synergy Icon */}
-                        <div className="text-center flex flex-col items-center justify-center">
-                            <div className="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-slate-900 font-bold mb-2">+</div>
-                            <p className="text-amber-400 font-serif italic text-lg">全域覆盖</p>
-                        </div>
-
-                        {/* Husband */}
-                        <div className="text-center p-6 bg-slate-800/80 rounded-xl border border-slate-700">
-                            <div className="text-blue-400 font-bold text-xl mb-2">Kevin (军师)</div>
-                            <div className="text-slate-300 text-sm space-y-2">
-                                <p>理性、宏观、逻辑</p>
-                                <p>吸引男性、高知精英</p>
-                                <p>解决“值不值得做”的问题</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-12 bg-slate-800 p-6 rounded-xl border border-amber-500/30 text-center">
-                        <h4 className="text-amber-400 font-bold mb-2">互为公域，互为私域</h4>
-                        <p className="text-slate-300 text-sm">
-                            Lina的粉丝如果觉得内容太软，推给先生看干货；<br/>
-                            Kevin的粉丝如果觉得内容太硬，推给太太看生活。<br/>
-                           
-                        </p>
-                    </div>
-                </div>
-            </div>
-          </Slide>
-
-        </div>
-
-        {/* Navigation Bar */}
-        <div className="bg-slate-900 border-t border-slate-800 p-4 flex justify-between items-center px-8">
-            <div className="flex gap-2">
-                {[...Array(totalSlides)].map((_, i) => (
-                   <div key={i} className="w-2 h-2 rounded-full bg-slate-600 transition-all duration-300" style={{backgroundColor: currentSlide === i ? '#f59e0b' : ''}}></div>
-                ))}
-            </div>
+        /* 响应式调整 - 手机端 */
+        @media (max-width: 768px) {
+            body { background-color: var(--bg-slate-900); }
+            .app-container {
+                height: 100%; /* 占满屏幕 */
+                border-radius: 0;
+                border: none;
+            }
+            .header-wrapper { padding: 1.5rem 1.5rem 0 1.5rem; }
+            .slide-content { padding: 0 1.5rem 1rem 1.5rem; }
+            .footer { padding: 1rem 1.5rem; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+            .header h2 { font-size: 1.5rem; }
+            .header p { font-size: 1rem; }
+            .version-tag { display: none; } /* 手机端隐藏版本号以节省空间 */
             
-            <div className="flex gap-4">
-                <button 
-                    onClick={prevSlide}
-                    className="p-2 rounded-full hover:bg-slate-800 text-slate-400 transition-colors"
-                >
-                    <ChevronLeft size={24} />
+            .grid-cols-1, .grid-cols-2, .grid-cols-3, .lg\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            .w-1-2 { width: 100% !important; }
+        }
+
+        /* 工具类 */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-8 { gap: 2rem; }
+        .gap-12 { gap: 3rem; }
+        .grid { display: grid; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .border { border-width: 1px; border-style: solid; }
+        .border-slate-700 { border-color: var(--bg-slate-700); }
+        .bg-slate-800 { background-color: var(--bg-slate-800); }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .font-bold { font-weight: 700; }
+        .font-medium { font-weight: 500; }
+        .italic { font-style: italic; }
+        .text-amber-500 { color: var(--amber-500); }
+        .text-amber-400 { color: var(--amber-400); }
+        .text-slate-300 { color: var(--text-slate-300); }
+        .text-slate-400 { color: var(--text-slate-400); }
+        .text-slate-500 { color: var(--text-slate-500); }
+        .animate-pulse { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+        <!-- 头部 Header -->
+        <div class="header-wrapper">
+            <div class="header">
+                <div>
+                    <h2 id="header-title"></h2>
+                    <p id="header-subtitle"></p>
+                </div>
+                <div class="version-tag">KEVIN'S IP STRATEGY v2.2</div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div id="slide-container" class="slide-content">
+            <!-- 动态内容 -->
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="footer">
+            <div id="dots-container" class="dots"></div>
+            
+            <div class="flex" style="gap: 1rem;">
+                <button id="btn-prev" class="nav-btn nav-btn-prev" aria-label="上一页">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </button>
-                <button 
-                    onClick={nextSlide}
-                    className="p-2 rounded-full bg-amber-600 text-white hover:bg-amber-700 transition-colors shadow-lg shadow-amber-900/50"
-                >
-                    <ChevronRight size={24} />
+                <button id="btn-next" class="nav-btn nav-btn-next" aria-label="下一页">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
             </div>
         </div>
-      </div>
     </div>
-  );
-};
 
-export default Presentation;
+    <script>
+        // 图标 SVG
+        const icons = {
+            compass: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+            users: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+            user: `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+            lightbulb: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`,
+            target: `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+            briefcase: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+            arrowRight: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
+            arrowRightBig: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`
+        };
+
+        const slides = [
+            {
+                title: "IP 核心定位",
+                subtitle: "认知降维打击：解决“离钱太远”的痛点",
+                render: () => `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 h-full items-center">
+                        <div class="flex flex-col gap-6">
+                            <div class="p-4 rounded-lg border border-red-500-30" style="background-color: var(--red-900-20);">
+                                <h4 class="font-bold mb-2 flex items-center gap-2" style="color: var(--red-400);">❌ 痛点现状</h4>
+                                <p class="text-slate-300 text-sm">以前内容太“雅”（纯讲书、历史、佛学），显得离“钱”和“事业”太远，用户可能把你当老师，金融专家人设弱化了。</p>
+                            </div>
+                            
+                            <div class="p-4 rounded-lg border border-emerald-500-30" style="background-color: var(--emerald-900-20);">
+                                <h4 class="font-bold mb-2 flex items-center gap-2" style="color: var(--emerald-400);">✅ 升级策略</h4>
+                                <p class="text-slate-300 text-sm">
+                                    不做“掉书袋”的文人，做<span class="font-bold" style="color: var(--emerald-300);">“懂人文的财富守护者”</span>。
+                                    <br/>每一个文化话题，最后都可“落地”到财富观或职业选择。
+                                </p>
+                            </div>
+
+                            <div style="margin-top: 0.5rem;">
+                                <h3 class="text-xl font-bold text-amber-500">核心人设 (Persona)</h3>
+                                <p class="text-2xl font-serif text-slate-100 italic">“金融圈的认知引路人”</p>
+                                <div class="flex gap-2" style="margin-top: 0.5rem; flex-wrap: wrap;">
+                                    ${['博学', '儒雅', '通透', '长期主义', '家庭感'].map(tag => `<span class="bg-slate-700 text-slate-300 text-xs rounded" style="padding: 0.25rem 0.5rem;">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 flex flex-col justify-center" style="box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+                            <h3 class="text-lg font-bold mb-6 text-amber-400 flex items-center gap-2">
+                                ${icons.compass} 差异化竞争
+                            </h3>
+                            <div class="flex flex-col gap-8">
+                                <div class="flex gap-4">
+                                    <div class="w-1-2" style="opacity: 0.5;">
+                                        <h4 class="text-slate-400 font-bold border-slate-600 mb-2" style="border-bottom-width: 1px; padding-bottom: 0.5rem;">普通保险IP</h4>
+                                        <p class="text-sm text-slate-500">晒MDRT奖杯</p>
+                                        <p class="text-sm text-slate-500">晒表彰大会</p>
+                                        <p class="text-sm text-slate-500">喊热血口号</p>
+                                    </div>
+                                    <div class="w-1-2">
+                                        <h4 class="text-amber-400 font-bold mb-2" style="border-bottom: 1px solid #d97706; padding-bottom: 0.5rem;">Kevin 的IP</h4>
+                                        <p class="text-sm text-slate-200">讲《雪国》与无常</p>
+                                        <p class="text-sm text-slate-200">讲宋画与审美</p>
+                                        <p class="text-sm text-slate-200">讲宏观经济周期</p>
+                                    </div>
+                                </div>
+                                <div class="p-4 rounded-lg text-amber-500 text-sm text-center font-bold" style="background-color: var(--amber-900-20); color: #fde68a;">
+                                    “用高认知高质量内容，筛选掉了那些只想赚快钱的人，留下了真正的高净值客户和精英人才。”
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "个人简介优化",
+                subtitle: "让陌生人一眼看懂“我是谁”",
+                render: () => `
+                    <div class="flex flex-col justify-center items-center h-full">
+                        <div class="w-full bg-slate-800 rounded-xl overflow-hidden border border-slate-700 flex flex-col md:flex-row" style="max-width: 48rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+                            <div class="w-full md:w-2/5 relative" style="background-color: var(--bg-slate-700); min-height: 250px;">
+                                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-slate-400);">
+                                    ${icons.user}
+                                    <span class="text-xs uppercase" style="letter-spacing: 0.1em; margin-top: 1rem;">Profile Image</span>
+                                    <span class="text-slate-500 text-center mt-2" style="font-size: 10px; padding: 0 1rem;">建议：穿有质感的衬衫/开衫，背景书架，眼神睿智温和。</span>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-3/5 p-8 flex flex-col justify-center">
+                                <h2 class="text-3xl font-bold text-white mb-1">陈云凯 | Kevin</h2>
+                                <p class="text-amber-500 font-medium mb-6">10年TOT保险人 · 行万里路的读书人</p>
+                                <div style="position: relative; margin-bottom: 2rem;">
+                                    <div style="position: absolute; left: -0.75rem; top: -0.5rem; font-size: 2.25rem; color: var(--text-slate-600); opacity: 0.3;">“</div>
+                                    <p class="text-slate-300 text-lg italic" style="padding-left: 0.5rem; line-height: 1.625;">
+                                        用历史的望远镜看清财富的终局，<br/>用长期主义经营人生。
+                                    </p>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    ${['香港保险 TOT 顶尖会员', '艺术鉴赏与宏观经济研究', '终身阅读者 & 知识策展人', '百人冠军团队招募导师'].map(item => `
+                                        <div class="flex items-center gap-3">
+                                            <span style="width: 6px; height: 6px; background-color: var(--amber-500); border-radius: 9999px; flex-shrink: 0;"></span>
+                                            <span class="text-slate-300 text-sm">${item}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "内容策略：落脚点思维",
+                subtitle: "从“纯讲书”到“借书谈事业”的逻辑跃迁",
+                render: () => `
+                    <div class="flex flex-col items-center justify-center h-full">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700" style="opacity: 0.6;">
+                                <h3 class="text-xl font-bold text-slate-400 mb-4">第一阶段：纯讲书</h3>
+                                <p class="text-sm text-slate-500 mb-2">话题：历史、艺术、佛学</p>
+                                <p class="text-sm text-slate-500 mb-2">结果：粉丝爱听，但无法转化为客户/合伙人。</p>
+                                <div class="mt-4 p-2 rounded text-xs text-center" style="background-color: rgba(0,0,0,0.2);">只有流量，没有留量</div>
+                            </div>
+                            <div class="flex items-center justify-center animate-pulse text-amber-500">
+                                ${icons.arrowRightBig}
+                            </div>
+                            <div class="p-6 rounded-xl border border-amber-500-30" style="background: linear-gradient(135deg, rgba(120, 53, 15, 0.3), var(--bg-slate-800)); border-color: rgba(245, 158, 11, 0.5);">
+                                <h3 class="text-xl font-bold text-amber-400 mb-4">第二阶段：借题发挥</h3>
+                                <p class="text-sm text-slate-300 mb-2">话题：历史 ➔ 周期 ➔ 财富</p>
+                                <p class="text-sm text-slate-300 mb-2">结果：用文化话题把人引进来，最后钩连到<span class="text-white font-bold">“财富观”或“职业选择”</span>。</p>
+                                <div class="mt-4 p-2 rounded text-xs text-center font-bold text-amber-400" style="background-color: rgba(245, 158, 11, 0.2);">既有高度，又有转化</div>
+                            </div>
+                        </div>
+                        <div class="mt-12 w-full bg-slate-800 p-6 rounded-lg border-l-4" style="border-left-color: var(--amber-500); max-width: 56rem;">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2">
+                                <span class="text-amber-500">${icons.lightbulb}</span> 解析
+                            </h4>
+                            <p class="text-slate-300 text-sm">
+                                讲完宋代名画，以前是感叹“美”，现在要感叹“美需要财富守护”或者“古人面对无常的智慧，就是现代人的保险思维”。
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "支柱一：宏观与财富 (40%)",
+                subtitle: "展示专业硬实力：利用《金钱的艺术》素材库",
+                render: () => `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                                <h3 class="font-bold text-amber-400 mb-2">核心素材</h3>
+                                <p class="text-slate-300 text-sm">
+                                    利用已有的演讲稿《金钱的艺术》，结合时事（如日本债务、芯片解禁）。
+                                </p>
+                            </div>
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                                <h3 class="font-bold text-amber-400 mb-2">转化逻辑：尾部事件</h3>
+                                <div class="flex flex-col gap-3">
+                                    <p class="text-xs text-slate-500 uppercase">Case Study 1</p>
+                                    <p class="text-slate-200 font-bold text-sm">迪士尼/光线传媒的“爆发点”</p>
+                                    <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--emerald-500);">
+                                        <p class="text-slate-400 text-xs italic">
+                                            “在投资里，99%的时间是平庸的，只有1%的尾部事件决定了成败。做保险事业也是如此。大部分时间在积累，等待那个爆发点。”
+                                        </p>
+                                    </div>
+                                    <p class="text-xs font-bold" style="color: var(--emerald-400); text-align: right;">➔ 钩连：职业选择与长期主义</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-amber-400 mb-2">转化逻辑：守富</h3>
+                                <div class="flex flex-col gap-3">
+                                    <p class="text-xs text-slate-500 uppercase">Case Study 2</p>
+                                    <p class="text-slate-200 font-bold text-sm">巴菲特的“防御性智慧”</p>
+                                    <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--emerald-500);">
+                                        <p class="text-slate-400 text-xs italic">
+                                            “中产阶级最大的风险不是赚不到钱，而是守不住钱。保险就是那个让你在危机中依然能睡得着觉的‘防御性资产’。”
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-xs font-bold mt-4" style="color: var(--emerald-400); text-align: right;">➔ 钩连：保险产品的必要性</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "支柱二：人文与人性 (30%)",
+                subtitle: "筛选同频人：用高级感建立灵魂共鸣",
+                render: () => `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                                <h3 class="font-bold text-amber-400 mb-2">核心素材</h3>
+                                <p class="text-slate-300 text-sm">历史兴衰、艺术审美、佛学智慧。维持高质量输出，让高知人群觉得“这个人懂我”。</p>
+                            </div>
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                                <h3 class="font-bold text-amber-400 mb-2">转化逻辑：无常与确幸</h3>
+                                <div class="flex flex-col gap-3">
+                                    <p class="text-xs text-slate-500 uppercase">Case Study 1</p>
+                                    <p class="text-slate-200 font-bold text-sm">《雪国》或 宋代《秉烛夜游图》</p>
+                                    <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--emerald-500);">
+                                        <p class="text-slate-400 text-xs italic">
+                                            “川端康成笔下的雪国有一种虚无之美...而保险本质上，就是为了让我们在无常的生命里，拥有一份确定的心安。”
+                                        </p>
+                                    </div>
+                                    <p class="text-xs font-bold" style="color: var(--emerald-400); text-align: right;">➔ 钩连：保险的情感价值</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col">
+                            <h3 class="font-bold text-amber-400 mb-2">转化逻辑：销售心法</h3>
+                            <div class="flex flex-col gap-3">
+                                <p class="text-xs text-slate-500 uppercase">Case Study 2</p>
+                                <p class="text-slate-200 font-bold text-sm">《心经》与“贪嗔痴”</p>
+                                <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--emerald-500);">
+                                    <p class="text-slate-400 text-xs italic">
+                                        “只有放下了对成交的执念，才能真正站在客户角度去精进专业。这也是团队提倡的 **‘不销而销’**。”
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-xs font-bold mt-auto" style="color: var(--emerald-400); text-align: right;">➔ 钩连：团队价值观与招募</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "支柱三 & 四：团队与实战",
+                subtitle: "补齐短板：不仅“务虚”，更会“务实”",
+                render: () => `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 h-full flex flex-col">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg" style="background-color: var(--rose-500-20); color: var(--rose-400);">${icons.users}</div>
+                                <h3 class="font-bold text-xl text-slate-200">【团队与生活】(20%)</h3>
+                            </div>
+                            <div class="flex flex-col gap-4 flex-1">
+                                <div class="bg-slate-900 p-4 rounded border border-slate-700">
+                                    <h4 class="text-amber-400 text-sm font-bold mb-1">内容方向</h4>
+                                    <ul style="list-style-type: disc; padding-left: 1rem;" class="text-xs text-slate-300">
+                                        <li>高质量读书会现场 / 夫妻档工作日常 / 高客交流感悟</li>
+                                    </ul>
+                                </div>
+                                <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--rose-400);">
+                                    <p class="text-slate-400 text-xs italic">
+                                        “在我们的圈子这里，不仅只是赚世俗的钱，也是滋养灵魂。”
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 h-full flex flex-col">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg" style="background-color: var(--blue-500-20); color: var(--blue-400);">${icons.briefcase}</div>
+                                <h3 class="font-bold text-xl text-slate-200">【实战与方法】(10%)</h3>
+                            </div>
+                            <div class="flex flex-col gap-4 flex-1">
+                                <div class="bg-slate-900 p-4 rounded border border-slate-700">
+                                    <h4 class="text-amber-400 text-sm font-bold mb-1">内容方向</h4>
+                                    <ul style="list-style-type: disc; padding-left: 1rem;" class="text-xs text-slate-300">
+                                        <li>解决家族信托问题 / 降息对钱包影响 / 分析保单</li>
+                                    </ul>
+                                </div>
+                                <div class="p-3 rounded border-l-2" style="background-color: rgba(0,0,0,0.3); border-left-color: var(--blue-400);">
+                                    <p class="text-slate-400 text-xs italic">
+                                        “所谓专业，不是堆砌术语，而是用最简单的逻辑，解决最复杂的问题。”
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "招募逻辑：全方位围猎",
+                subtitle: "如何通过IP设计，让高质量人才主动加入？",
+                render: () => `
+                    <div class="flex flex-col items-center h-full">
+                        <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-slate-800 p-4 rounded-lg text-center border-t-4" style="border-top-color: var(--amber-500);">
+                                <h4 class="font-bold text-slate-200 mb-2">Step 1: 筛选</h4>
+                                <p class="text-xs text-slate-400">通过《金钱的艺术》、宏观经济等高门槛内容，<strong class="text-amber-500">自动过滤</strong>掉急功近利的人。</p>
+                            </div>
+                            <div class="bg-slate-800 p-4 rounded-lg text-center border-t-4" style="border-top-color: var(--amber-500);">
+                                <h4 class="font-bold text-slate-200 mb-2">Step 2: 吸引</h4>
+                                <p class="text-xs text-slate-400">通过“长期主义”、“把保险当公司经营”，<strong class="text-amber-500">击中</strong>想转型高知人群的痛点。</p>
+                            </div>
+                            <div class="bg-slate-800 p-4 rounded-lg text-center border-t-4" style="border-top-color: var(--amber-500);">
+                                <h4 class="font-bold text-slate-200 mb-2">Step 3: 转化</h4>
+                                <p class="text-xs text-slate-400">通过展示“TOT结果”和“百人团队”，<strong class="text-amber-500">消除</strong>他们对收入的顾虑。</p>
+                            </div>
+                        </div>
+                        <div class="p-8 rounded-2xl border border-slate-700 w-full flex items-center justify-between" style="background: linear-gradient(to right, var(--bg-slate-800), #0f172a);">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-2">给 IP 的建议：</h3>
+                                <p class="text-slate-300 italic" style="max-width: 42rem; line-height: 1.75;">
+                                    “Kevin 的招募对象，不是为了底薪而来的人。他们是为了寻找一个**精神导师**，寻找一种**有尊严的赚钱方式**。<br/><br/>聪明人，也可以用体面的方式，赢取财富。”
+                                </p>
+                            </div>
+                            <div class="hidden md:block" style="opacity: 0.2; color: var(--amber-500);">
+                                ${icons.target}
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "夫妻档：1+1 > 2",
+                subtitle: "如果太太是“前台的火”，你就是“后台的冰”",
+                render: () => `
+                    <div class="flex flex-col items-center justify-center h-full">
+                        <div class="relative w-full" style="max-width: 56rem;">
+                            <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(127, 29, 29, 0.2), rgba(30, 58, 138, 0.2)); border-radius: 9999px; filter: blur(40px);"></div>
+                            <div class="relative grid grid-cols-3 gap-4 items-center">
+                                <div class="text-center p-6 bg-slate-800 rounded-xl border border-slate-700" style="background-color: rgba(30, 41, 59, 0.8);">
+                                    <div class="text-rose-400 font-bold text-xl mb-2">Lina (TOT)</div>
+                                    <div class="text-slate-300 text-sm flex flex-col gap-2">
+                                        <p>感性、温暖、生活</p>
+                                        <p>吸引宝妈、职场人</p>
+                                    </div>
+                                </div>
+                                <div class="text-center flex flex-col items-center justify-center">
+                                    <div style="width: 3rem; height: 3rem; background-color: var(--amber-500); border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--bg-slate-900); margin-bottom: 0.5rem;">+</div>
+                                    <p class="text-amber-400 font-serif italic text-lg">全域覆盖</p>
+                                </div>
+                                <div class="text-center p-6 bg-slate-800 rounded-xl border border-slate-700" style="background-color: rgba(30, 41, 59, 0.8);">
+                                    <div class="text-blue-400 font-bold text-xl mb-2">Kevin (军师)</div>
+                                    <div class="text-slate-300 text-sm flex flex-col gap-2">
+                                        <p>理性、宏观、逻辑</p>
+                                        <p>吸引男性、高知精英</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-12 bg-slate-800 p-6 rounded-xl border border-amber-500-30 text-center">
+                                <h4 class="text-amber-400 font-bold mb-2">互为公域，互为私域</h4>
+                                <p class="text-slate-300 text-sm">
+                                    Lina的粉丝如果觉得内容太软，推给先生看干货；Kevin的粉丝如果觉得内容太硬，推给太太看生活。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentIndex = 0;
+            const slideContainer = document.getElementById('slide-container');
+            const headerTitle = document.getElementById('header-title');
+            const headerSubtitle = document.getElementById('header-subtitle');
+            const dotsContainer = document.getElementById('dots-container');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const app = document.getElementById('app');
+
+            // 初始化
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                dotsContainer.appendChild(dot);
+            });
+
+            function renderSlide(index) {
+                const slide = slides[index];
+                headerTitle.textContent = slide.title;
+                headerSubtitle.textContent = slide.subtitle;
+                slideContainer.innerHTML = `<div class="fade-in h-full">${slide.render()}</div>`;
+                
+                const dots = document.querySelectorAll('.dot');
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === index);
+                });
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                renderSlide(currentIndex);
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                renderSlide(currentIndex);
+            }
+
+            btnPrev.addEventListener('click', prevSlide);
+            btnNext.addEventListener('click', nextSlide);
+
+            // 手势控制
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            app.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            app.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const threshold = 50; 
+                if (touchEndX < touchStartX - threshold) nextSlide(); // Swipe Left -> Next
+                if (touchEndX > touchStartX + threshold) prevSlide(); // Swipe Right -> Prev
+            }
+
+            // 键盘控制
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight') nextSlide();
+                if(e.key === 'ArrowLeft') prevSlide();
+            });
+
+            renderSlide(0);
+        });
+    </script>
+</body>
+</html>
