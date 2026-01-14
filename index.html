@@ -3,40 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kevin's IP Strategy v2.5</title>
+    <title>Kevin's IP Strategy v3.0</title>
     <style>
-        /* 基础重置与变量 */
+        /* --- 核心变量与重置 --- */
         :root {
-            --bg-black: #050505;
-            --bg-slate-900: #0f172a;
-            --bg-slate-800: #1e293b;
-            --bg-slate-700: #334155;
-            --text-slate-100: #f1f5f9;
-            --text-slate-200: #e2e8f0;
-            --text-slate-300: #cbd5e1;
-            --text-slate-400: #94a3b8;
-            --text-slate-500: #64748b;
-            --text-slate-600: #475569;
-            --amber-500: #f59e0b;
-            --amber-400: #fbbf24;
-            --amber-600: #d97706;
-            --amber-900-20: rgba(120, 53, 15, 0.2);
-            --red-400: #f87171;
-            --red-500-20: rgba(239, 68, 68, 0.2);
-            --emerald-400: #34d399;
-            --emerald-500-20: rgba(16, 185, 129, 0.2);
-            --blue-400: #60a5fa;
-            --blue-500-20: rgba(59, 130, 246, 0.2);
-            --rose-400: #fb7185;
-            --rose-500-20: rgba(244, 63, 94, 0.2);
+            --bg-body: #020617; /* 更深邃的黑 */
+            --bg-card: #0f172a;
+            --bg-card-lighter: #1e293b;
+            --border-color: #334155;
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-accent: #cbd5e1;
+            
+            --brand-gold: #f59e0b;
+            --brand-gold-dim: rgba(245, 158, 11, 0.1);
+            --brand-red: #ef4444;
+            --brand-red-dim: rgba(239, 68, 68, 0.1);
+            --brand-green: #10b981;
+            --brand-green-dim: rgba(16, 185, 129, 0.1);
+            --brand-blue: #3b82f6;
+            --brand-blue-dim: rgba(59, 130, 246, 0.1);
+            --brand-pink: #ec4899;
+            
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-black);
-            color: var(--text-slate-100);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
             height: 100vh;
             width: 100vw;
             display: flex;
@@ -45,728 +45,633 @@
             overflow: hidden;
         }
 
-        /* 主容器 */
-        .app-container {
+        /* --- 主窗口容器 --- */
+        .app-window {
             width: 100%;
             max-width: 1024px;
-            height: 720px; 
-            background-color: var(--bg-slate-900);
-            border-radius: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--bg-slate-800);
+            height: 760px; /* 增加高度以容纳更多内容 */
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
         }
 
-        /* 动画 */
-        .fade-in {
-            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .6; }
-        }
-        .animate-pulse {
-            animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        /* 滚动条样式 */
-        .slide-content {
-            padding: 0 2rem 2rem 2rem;
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            -webkit-overflow-scrolling: touch;
-        }
-        .slide-content::-webkit-scrollbar { width: 6px; }
-        .slide-content::-webkit-scrollbar-track { background: transparent; }
-        .slide-content::-webkit-scrollbar-thumb { background: var(--bg-slate-700); border-radius: 3px; }
-
-        /* 头部样式 */
-        .header-wrapper {
-            padding: 2rem 2rem 0.5rem 2rem;
-            flex-shrink: 0;
-            background-color: var(--bg-slate-900);
-            z-index: 10;
-        }
+        /* --- 头部区域 --- */
         .header {
-            margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-            padding-bottom: 1rem;
+            padding: 1.5rem 2rem 1rem 2rem;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            background: linear-gradient(to bottom, var(--bg-card), rgba(15, 23, 42, 0.95));
+            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            flex-shrink: 0;
         }
-        .header h2 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--amber-500);
+        .header-content h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-gold);
             line-height: 1.2;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.5px;
         }
-        .header p {
-            color: var(--text-slate-400);
+        .header-content p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
             font-weight: 400;
-            margin-top: 0.5rem;
-            font-size: 1rem;
-            opacity: 0.9;
         }
-        .version-tag {
-            color: var(--text-slate-600);
-            font-size: 0.75rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            white-space: nowrap;
-            opacity: 0.7;
+        .version-badge {
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
-        /* 底部导航 */
+        /* --- 核心内容可视区 --- */
+        .slide-viewport {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            padding: 0; /* padding 交给内部容器控制 */
+            display: flex;
+            flex-direction: column;
+        }
+        .slide-inner {
+            padding: 2rem;
+            min-height: 100%; /* 确保内容少时也能撑满 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 滚动条美化 */
+        .slide-viewport::-webkit-scrollbar { width: 6px; }
+        .slide-viewport::-webkit-scrollbar-track { background: transparent; }
+        .slide-viewport::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+        /* --- 底部导航 --- */
         .footer {
-            background-color: var(--bg-slate-900);
-            border-top: 1px solid var(--bg-slate-800);
             padding: 1rem 2rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-card);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
             z-index: 10;
         }
-        .dots { display: flex; gap: 0.6rem; }
-        .dot {
-            width: 0.5rem; height: 0.5rem;
-            border-radius: 9999px;
-            background-color: var(--bg-slate-700);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .dot.active { 
-            background-color: var(--amber-500); 
-            transform: scale(1.4); 
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
-        }
-
         .nav-btn {
-            width: 40px; height: 40px;
+            width: 44px; height: 44px;
             border-radius: 50%;
-            border: none;
-            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-lighter);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .nav-btn-prev { background: transparent; color: var(--text-slate-400); }
-        .nav-btn-prev:hover { background-color: var(--bg-slate-800); color: var(--text-slate-200); }
-        .nav-btn-next {
-            background: linear-gradient(135deg, var(--amber-500), var(--amber-600));
-            color: #000;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        .nav-btn:hover { background: var(--border-color); }
+        .nav-btn.active { 
+            background: var(--brand-gold); 
+            color: #000; 
+            border-color: var(--brand-gold); 
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
         }
-        .nav-btn-next:active { transform: scale(0.95); box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2); }
+        .dots { display: flex; gap: 8px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); transition: all 0.3s; }
+        .dot.active { width: 24px; background: var(--brand-gold); border-radius: 4px; }
 
-        /* 卡片通用样式 */
+        /* --- 通用组件样式 --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            height: 100%; /* 关键：撑满高度 */
+        }
         .card {
-            background-color: var(--bg-slate-800);
-            border: 1px solid var(--bg-slate-700);
-            border-radius: 0.75rem;
+            background-color: var(--bg-card-lighter);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
         }
         
         .tag {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 9999px;
-            background-color: var(--bg-slate-700);
-            color: var(--text-slate-300);
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.08);
+            font-size: 0.8rem;
+            color: var(--text-accent);
+            margin: 0 6px 6px 0;
         }
 
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2rem;
-            height: 2rem;
-            background-color: var(--bg-slate-700);
-            color: var(--text-slate-200);
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
+        /* 动画类 */
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
 
-        /* 响应式调整 - 手机端 */
+        /* --- 响应式适配 (Mobile) --- */
         @media (max-width: 768px) {
-            body { background-color: var(--bg-slate-900); }
-            .app-container {
-                height: 100%;
-                border-radius: 0;
-                border: none;
-            }
-            .header-wrapper { padding: 1.5rem 1.5rem 0 1.5rem; }
-            .slide-content { padding: 0 1.5rem 1.5rem 1.5rem; }
-            .footer { padding: 1rem 1.5rem; padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); }
-            .header h2 { font-size: 1.5rem; }
-            .header p { font-size: 0.95rem; }
-            .version-tag { display: none; }
+            .app-window { height: 100%; border-radius: 0; border: none; }
+            .header { padding: 1.25rem 1.25rem 0.75rem 1.25rem; }
+            .slide-inner { padding: 1.25rem; }
+            .grid-layout { grid-template-columns: 1fr; height: auto; gap: 1rem; }
+            .footer { padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom)); }
             
-            .grid-desktop { grid-template-columns: 1fr !important; }
-            .flex-desktop { flex-direction: column !important; }
-            .w-half-desktop { width: 100% !important; }
-            .hidden-mobile { display: none !important; }
-            .mt-mobile { margin-top: 1.5rem !important; }
-            .rotate-mobile { transform: rotate(90deg); margin: 1rem 0; }
-        }
-
-        /* 桌面端布局辅助 */
-        @media (min-width: 769px) {
-            .grid-desktop { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-            .grid-3-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
-            .flex-desktop { display: flex; flex-direction: row; }
-            .w-half-desktop { width: 50%; }
+            /* 强制重置部分 flex 行为以防重叠 */
+            .mobile-stack { flex-direction: column !important; }
+            .mobile-full { width: 100% !important; }
+            .mobile-mt { margin-top: 1rem !important; }
+            .mobile-hide { display: none !important; }
+            
+            /* 特殊处理 Plus 图标 */
+            .plus-icon-container { margin: 1.5rem 0 !important; transform: rotate(90deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container" id="app">
-        <!-- 头部 Header -->
-        <div class="header-wrapper">
-            <div class="header">
-                <div>
-                    <h2 id="header-title"></h2>
-                    <p id="header-subtitle"></p>
-                </div>
-                <div class="version-tag">KEVIN'S IP STRATEGY v2.5</div>
-            </div>
+<div class="app-window" id="app">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1 id="slide-title">加载中...</h1>
+            <p id="slide-subtitle"></p>
         </div>
-
-        <!-- 内容区域 -->
-        <div id="slide-container" class="slide-content">
-            <!-- 动态内容 -->
-        </div>
-
-        <!-- 底部导航 -->
-        <div class="footer">
-            <div id="dots-container" class="dots"></div>
-            
-            <div class="flex" style="gap: 1rem;">
-                <button id="btn-prev" class="nav-btn nav-btn-prev" aria-label="上一页">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <button id="btn-next" class="nav-btn nav-btn-next" aria-label="下一页">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
-            </div>
-        </div>
+        <div class="version-badge">V3.0</div>
     </div>
 
-    <script>
-        // 图标 SVG
-        const icons = {
-            compass: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
-            users: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-            user: `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-            lightbulb: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`,
-            target: `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
-            briefcase: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
-            arrowRight: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
-            arrowRightBig: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
-            quote: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z"/></svg>`
-        };
+    <!-- Main Content -->
+    <div id="viewport" class="slide-viewport">
+        <!-- Content inject here -->
+    </div>
 
-        const slides = [
-            // Slide 1: Core Positioning
-            {
-                title: "IP 核心定位",
-                subtitle: "认知降维打击：解决“离钱太远”的痛点",
-                render: () => `
-                    <div class="h-full flex flex-col justify-center">
-                        <div class="grid-desktop h-full items-center">
+    <!-- Footer -->
+    <div class="footer">
+        <div class="dots" id="dots"></div>
+        <div style="display: flex; gap: 12px;">
+            <button class="nav-btn" id="prevBtn" aria-label="上一页">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="nav-btn active" id="nextBtn" aria-label="下一页">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // SVG Icons
+    const ICONS = {
+        compass: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></svg>`,
+        user: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+        arrowRight: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`,
+        quote: `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.3"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z"/></svg>`,
+        bulb: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2h4M12 14v-4M8 4h8l1 9H7L8 4zM9 17h6M10 21h4"/></svg>` // Simplified bulb
+    };
+
+    const SLIDES = [
+        // 1. IP Positioning
+        {
+            title: "IP 核心定位",
+            subtitle: "认知降维打击：解决“离钱太远”的痛点",
+            render: () => `
+                <div class="slide-inner">
+                    <div class="grid-layout">
+                        <!-- Left: Status & Strategy -->
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
+                            <!-- Contrast Cards -->
+                            <div style="display: flex; gap: 1rem;" class="mobile-stack">
+                                <div class="card" style="flex: 1; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05);">
+                                    <h4 style="color: var(--brand-red); margin-bottom: 0.5rem; font-size: 0.9rem;">❌ 痛点现状</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">以前内容太“雅”（历史/佛学），离“钱”太远，用户只把你当老师，金融专家人设弱化。</p>
+                                </div>
+                                <div class="card" style="flex: 1; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05);">
+                                    <h4 style="color: var(--brand-green); margin-bottom: 0.5rem; font-size: 0.9rem;">✅ 升级策略</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">做“懂人文的财富守护者”。每一个文化话题，最后都必须“落地”到财富观或职业选择。</p>
+                                </div>
+                            </div>
                             
-                            <!-- Left Column: Strategy & Persona -->
-                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                                <!-- Pain Point vs Strategy Cards -->
-                                <div style="display: flex; gap: 1rem; flex-direction: row;">
-                                    <div class="card" style="flex: 1; background-color: var(--red-500-20); border-color: rgba(248, 113, 113, 0.3); padding: 1rem;">
-                                        <h4 style="color: var(--red-400); font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem;">❌ 痛点现状</h4>
-                                        <p class="text-slate-300" style="font-size: 0.85rem; line-height: 1.4;">内容太“雅”，离“钱”太远，用户只把你当老师，不当金融专家。</p>
-                                    </div>
-                                    <div class="card" style="flex: 1; background-color: var(--emerald-500-20); border-color: rgba(52, 211, 153, 0.3); padding: 1rem;">
-                                        <h4 style="color: var(--emerald-400); font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem;">✅ 升级策略</h4>
-                                        <p class="text-slate-300" style="font-size: 0.85rem; line-height: 1.4;">做<span style="color: #6ee7b7; font-weight: bold;">“懂人文的财富守护者”</span>。每一话题最后都“落地”到财富观。</p>
+                            <!-- Persona -->
+                            <div class="card" style="border-left: 4px solid var(--brand-gold);">
+                                <h3 style="color: var(--brand-gold); margin-bottom: 0.5rem; font-size: 1.1rem;">核心人设 (Persona)</h3>
+                                <p style="font-size: 1.6rem; font-family: 'Times New Roman', serif; font-style: italic; margin-bottom: 1rem; color: #fff;">“金融圈的认知引路人”</p>
+                                <div>
+                                    ${['博学', '儒雅', '通透', '长期主义', '家庭感'].map(t => `<span class="tag">${t}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Differentiation -->
+                        <div class="card" style="justify-content: center;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1.5rem; color: var(--brand-gold);">
+                                ${ICONS.compass} <span style="font-weight: bold;">差异化竞争</span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="border-right: 1px solid var(--border-color); padding-right: 1rem;">
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">普通保险 IP</div>
+                                    <div style="color: var(--text-secondary); font-size: 0.9rem; line-height: 2;">
+                                        • 晒 MDRT 奖杯<br>• 晒表彰大会<br>• 喊热血口号
                                     </div>
                                 </div>
-
-                                <!-- Persona Block -->
-                                <div style="margin-top: 0.5rem;">
-                                    <h3 style="color: var(--amber-500); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">核心人设 (Persona)</h3>
-                                    <p style="color: var(--text-slate-100); font-size: 1.5rem; font-family: 'Times New Roman', serif; font-style: italic; margin-bottom: 1rem;">“金融圈的认知引路人”</p>
-                                    <div style="display: flex; flex-wrap: wrap;">
-                                        ${['博学', '儒雅', '通透', '长期主义', '家庭感'].map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                <div>
+                                    <div style="font-size: 0.8rem; color: var(--brand-gold); margin-bottom: 0.5rem;">Kevin 的 IP</div>
+                                    <div style="color: var(--text-primary); font-size: 0.9rem; font-weight: 500; line-height: 2;">
+                                        • 讲《雪国》与无常<br>• 讲宋画与审美<br>• 讲宏观经济周期
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Right Column: Differentiation -->
-                            <div class="card mt-mobile" style="height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 2rem;">
-                                <h3 style="color: var(--amber-400); font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    ${icons.compass} 差异化竞争
-                                </h3>
-                                
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                                    <div style="border-right: 1px solid var(--bg-slate-700); padding-right: 1rem;">
-                                        <h4 style="color: var(--text-slate-500); font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.05em;">普通保险 IP</h4>
-                                        <ul style="list-style: none; color: var(--text-slate-500); font-size: 0.9rem; line-height: 2;">
-                                            <li>晒 MDRT 奖杯</li>
-                                            <li>晒表彰大会</li>
-                                            <li>喊热血口号</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 style="color: var(--amber-500); font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 0.05em;">Kevin 的 IP</h4>
-                                        <ul style="list-style: none; color: var(--text-slate-200); font-size: 0.9rem; line-height: 2; font-weight: 500;">
-                                            <li>讲《雪国》与无常</li>
-                                            <li>讲宋画与审美</li>
-                                            <li>讲宏观经济周期</li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div style="background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 0.5rem; padding: 1rem; text-align: center;">
-                                    <p style="color: var(--amber-400); font-size: 0.9rem; font-weight: 500; line-height: 1.5;">
-                                        “用高认知内容，筛选掉想赚快钱的人，<br>留下真正的高净值客户和精英。”
-                                    </p>
-                                </div>
+                            
+                            <div style="background: var(--brand-gold-dim); border: 1px solid rgba(245,158,11,0.2); padding: 1rem; border-radius: 8px; text-align: center;">
+                                <p style="font-size: 0.9rem; color: var(--brand-gold);">“用高认知内容，筛选掉想赚快钱的人，<br>留下真正的高净值客户和精英。”</p>
                             </div>
                         </div>
                     </div>
-                `
-            },
-            // Slide 2: Bio
-            {
-                title: "个人简介优化",
-                subtitle: "让陌生人一眼看懂“我是谁”",
-                render: () => `
-                    <div class="h-full flex flex-col justify-center items-center">
-                        <div class="card flex-desktop" style="padding: 0; overflow: hidden; width: 100%; max-width: 52rem; border: 1px solid var(--bg-slate-700);">
-                            
-                            <!-- Left: Image Placeholder -->
-                            <div class="w-half-desktop" style="background-color: var(--bg-slate-700); min-height: 280px; position: relative; display: flex; align-items: center; justify-content: center;">
-                                <div style="text-align: center; color: var(--text-slate-400); z-index: 2;">
-                                    ${icons.user}
-                                    <div style="font-size: 0.75rem; letter-spacing: 0.1em; margin-top: 1rem; font-weight: 600; text-transform: uppercase;">Profile Image</div>
-                                    <div style="font-size: 0.75rem; margin-top: 0.5rem; opacity: 0.7; padding: 0 2rem;">建议：质感衬衫/开衫，背景书架，眼神睿智温和。</div>
-                                </div>
-                                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2));"></div>
-                            </div>
-
-                            <!-- Right: Content -->
-                            <div class="w-half-desktop" style="padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; background-color: var(--bg-slate-800);">
-                                <h2 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 0.25rem;">陈云凯 <span style="font-weight: 300; opacity: 0.5;">| Kevin</span></h2>
-                                <p style="color: var(--amber-500); font-weight: 600; font-size: 0.95rem; margin-bottom: 1.5rem; letter-spacing: 0.02em;">10年TOT保险人 · 行万里路的读书人</p>
-                                
-                                <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem;">
-                                    <div style="font-size: 3rem; line-height: 1; color: var(--bg-slate-700); font-family: serif;">“</div>
-                                    <p style="color: var(--text-slate-200); font-size: 1.05rem; font-style: italic; line-height: 1.6; padding-top: 0.5rem;">
-                                        用历史的望远镜看清财富的终局，<br>用长期主义经营人生。
-                                    </p>
-                                </div>
-
-                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                    ${[
-                                        '香港保险 TOT 顶尖会员',
-                                        '艺术鉴赏与宏观经济研究',
-                                        '终身阅读者 & 知识策展人',
-                                        '百人冠军团队招募导师'
-                                    ].map(item => `
-                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                            <span style="width: 6px; height: 6px; background-color: var(--amber-500); border-radius: 50%;"></span>
-                                            <span style="color: var(--text-slate-300); font-size: 0.9rem;">${item}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
+                </div>
+            `
+        },
+        // 2. Profile
+        {
+            title: "个人简介优化",
+            subtitle: "让陌生人一眼看懂“我是谁”",
+            render: () => `
+                <div class="slide-inner" style="justify-content: center; align-items: center;">
+                    <div class="card mobile-stack" style="flex-direction: row; padding: 0; overflow: hidden; width: 100%; max-width: 800px; border: 1px solid var(--border-color);">
+                        
+                        <!-- Left Image -->
+                        <div style="background: var(--bg-card-lighter); width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; border-right: 1px solid var(--border-color);" class="mobile-full">
+                            <div style="color: var(--text-secondary); margin-bottom: 1rem;">${ICONS.user}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Profile Image</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem; opacity: 0.6;">建议：质感衬衫/开衫，背景书架，眼神睿智温和。</div>
                         </div>
-                        <div style="margin-top: 1.5rem; color: var(--text-slate-500); font-size: 0.8rem;">
-                            *此卡片可作为视频号置顶封面、微信朋友圈背景图、直播间贴片。
+
+                        <!-- Right Content -->
+                        <div style="padding: 2.5rem; width: 60%; display: flex; flex-direction: column; justify-content: center;" class="mobile-full">
+                            <h2 style="font-size: 2rem; color: #fff; margin-bottom: 0.25rem;">陈云凯 <span style="font-size: 1.2rem; font-weight: 300; opacity: 0.6;">| Kevin</span></h2>
+                            <p style="color: var(--brand-gold); margin-bottom: 1.5rem; font-weight: 500;">10年TOT保险人 · 行万里路的读书人</p>
+                            
+                            <div style="position: relative; padding-left: 1.5rem; margin-bottom: 2rem; border-left: 3px solid var(--border-color);">
+                                <p style="font-style: italic; color: var(--text-accent); line-height: 1.6; font-size: 1.1rem;">
+                                    用历史的望远镜看清财富的终局，<br>用长期主义经营人生。
+                                </p>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                ${['香港保险 TOT 顶尖会员', '艺术鉴赏与宏观经济研究', '终身阅读者 & 知识策展人', '百人冠军团队招募导师'].map(i => `
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 6px; height: 6px; background: var(--brand-gold); border-radius: 50%;"></div>
+                                        <span style="font-size: 0.9rem; color: var(--text-secondary);">${i}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
-                `
-            },
-            // Slide 3: Content Strategy (REFACTORED)
-            {
-                title: "内容策略：落脚点思维",
-                subtitle: "从“纯讲书”到“借书谈事业”的逻辑跃迁",
-                render: () => `
-                    <div class="flex flex-col h-full">
-                        <div class="flex-1 flex flex-col justify-center">
-                            <div class="grid-3-col w-full grid-desktop">
-                                
-                                <!-- Step 1 -->
-                                <div class="card" style="opacity: 0.6; display: flex; flex-direction: column; height: 100%;">
-                                    <div style="font-weight: 700; color: var(--text-slate-400); margin-bottom: 1rem; border-bottom: 1px solid var(--bg-slate-700); padding-bottom: 0.5rem;">第一阶段：纯讲书</div>
-                                    <div style="flex: 1;">
-                                        <p class="text-sm text-slate-500 mb-2">话题：历史、艺术、佛学</p>
-                                        <p class="text-sm text-slate-500">结果：只有流量，没有留量。</p>
-                                    </div>
-                                    <div class="mt-4 p-2 rounded text-xs text-center" style="background-color: rgba(0,0,0,0.2);">用户只把你当博主</div>
-                                </div>
-
-                                <!-- Arrow (Hidden on mobile, shown on desktop) -->
-                                <div class="flex items-center justify-center rotate-mobile" style="color: var(--amber-500);">
-                                    ${icons.arrowRightBig}
-                                </div>
-
-                                <!-- Step 2 -->
-                                <div class="card" style="background: linear-gradient(145deg, rgba(120, 53, 15, 0.15), var(--bg-slate-800)); border-color: var(--amber-500); display: flex; flex-direction: column; height: 100%;">
-                                    <div style="font-weight: 700; color: var(--amber-400); margin-bottom: 1rem; border-bottom: 1px solid var(--amber-900-20); padding-bottom: 0.5rem;">第二阶段：借题发挥</div>
-                                    <div style="flex: 1;">
-                                        <p class="text-sm text-slate-300 mb-2">话题：历史 ➔ 周期 ➔ 财富</p>
-                                        <p class="text-sm text-slate-300">结果：既有高度，又有转化。</p>
-                                    </div>
-                                    <div class="mt-4 p-2 rounded text-xs text-center font-bold" style="background-color: rgba(245, 158, 11, 0.2); color: var(--amber-400);">最后钩连到“财富观”</div>
-                                </div>
+                    <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.5;">* 此卡片可作为视频号置顶封面、微信朋友圈背景图</p>
+                </div>
+            `
+        },
+        // 3. Content Strategy (New Layout)
+        {
+            title: "内容策略：落脚点思维",
+            subtitle: "从“纯讲书”到“借书谈事业”的逻辑跃迁",
+            render: () => `
+                <div class="slide-inner">
+                    <!-- Top: Process Flow -->
+                    <div style="display: flex; gap: 1rem; align-items: stretch; margin-bottom: 2rem;" class="mobile-stack">
+                        
+                        <!-- Step 1 -->
+                        <div class="card" style="flex: 1; border: 1px dashed var(--border-color); background: transparent;">
+                            <div style="font-weight: 700; color: var(--text-secondary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">第一阶段：纯讲书</div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">话题：历史、艺术、佛学</p>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">结果：只有流量，没有留量。</p>
                             </div>
+                            <div style="margin-top: 1rem; padding: 8px; background: rgba(255,255,255,0.05); text-align: center; border-radius: 6px; font-size: 0.8rem;">用户只把你当博主</div>
                         </div>
 
-                        <div class="w-full bg-slate-800 p-6 rounded-lg border-l-4 mt-6" style="border-left-color: var(--amber-500); max-width: 56rem; flex-shrink: 0;">
-                            <h4 class="text-white font-bold mb-2 flex items-center gap-2">
-                                <span class="text-amber-500">${icons.lightbulb}</span> 
-                                解析
-                            </h4>
-                            <p class="text-slate-300 text-sm" style="line-height: 1.6;">
+                        <!-- Arrow -->
+                        <div style="display: flex; align-items: center; justify-content: center; color: var(--brand-gold);" class="plus-icon-container">
+                            ${ICONS.arrowRight}
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="card" style="flex: 1; border-color: var(--brand-gold); background: linear-gradient(135deg, var(--bg-card-lighter), rgba(245, 158, 11, 0.05));">
+                            <div style="font-weight: 700; color: var(--brand-gold); margin-bottom: 1rem; border-bottom: 1px solid var(--brand-gold-dim); padding-bottom: 0.5rem;">第二阶段：借题发挥</div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem;">话题：历史 ➔ 周期 ➔ 财富</p>
+                                <p style="font-size: 0.9rem; color: var(--text-primary);">结果：既有高度，又有转化。</p>
+                            </div>
+                            <div style="margin-top: 1rem; padding: 8px; background: var(--brand-gold-dim); color: var(--brand-gold); text-align: center; border-radius: 6px; font-size: 0.8rem; font-weight: bold;">最后钩连到“财富观”</div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom: Logic Explanation -->
+                    <div class="card" style="border-left: 4px solid var(--brand-gold); flex-direction: row; gap: 1rem; align-items: flex-start; margin-top: auto;">
+                        <div style="padding: 4px; background: var(--brand-gold); border-radius: 4px; color: #000;">${ICONS.bulb}</div>
+                        <div>
+                            <h4 style="color: #fff; margin-bottom: 0.5rem;">解析</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-accent); line-height: 1.6;">
                                 Kevin 不需要抛弃喜欢的历史和艺术，那是IP的灵魂。我们要做的只是改变<strong>“结尾那10%”</strong>。<br>
                                 比如讲完宋代名画，以前是感叹“美”，现在要感叹“美需要财富守护”或者“古人面对无常的智慧，就是现代人的保险思维”。
                             </p>
                         </div>
                     </div>
-                `
-            },
-            // Slide 4: Macro & Wealth (REFACTORED)
-            {
-                title: "支柱一：宏观与财富 (40%)",
-                subtitle: "展示专业硬实力：利用《金钱的艺术》素材库",
-                render: () => `
-                    <div class="grid-desktop h-full">
-                        
-                        <!-- Left: Core Material -->
-                        <div class="flex flex-col gap-6">
+                </div>
+            `
+        },
+        // 4. Content Pillar 1 (Refined Layout)
+        {
+            title: "支柱一：宏观与财富 (40%)",
+            subtitle: "展示专业硬实力：利用《金钱的艺术》素材库",
+            render: () => `
+                <div class="slide-inner">
+                    <div class="grid-layout">
+                        <!-- Left Column -->
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <div class="card">
-                                <h3 style="color: var(--amber-400); font-weight: 700; margin-bottom: 0.5rem;">核心素材库</h3>
-                                <p class="text-slate-300 text-sm">利用已有的演讲稿《金钱的艺术》，结合时事（如日本债务、芯片解禁）。这是展示 TOT 专业度和认知维度。</p>
+                                <h3 style="color: var(--brand-gold); margin-bottom: 0.5rem; font-size: 1rem;">核心素材库</h3>
+                                <p style="font-size: 0.9rem; color: var(--text-accent); line-height: 1.5;">利用已有的演讲稿《金钱的艺术》，结合时事（如日本债务、芯片解禁）。这是展示 TOT 专业度和认知维度。</p>
                             </div>
 
-                            <div class="card" style="border-left: 4px solid var(--emerald-400);">
+                            <div class="card" style="flex: 1; border-top: 4px solid var(--brand-green);">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                    <h3 style="color: var(--text-slate-100); font-weight: 700;">转化逻辑：尾部事件</h3>
-                                    <span style="font-size: 0.7rem; background: var(--bg-slate-700); padding: 2px 6px; rounded: 4px;">Case Study 1</span>
+                                    <h3 style="color: #fff; font-size: 1rem;">转化逻辑：尾部事件</h3>
+                                    <span class="tag">Case 1</span>
                                 </div>
-                                <p class="text-slate-400 text-xs mb-3">案例：迪士尼/光线传媒的“爆发点”</p>
-                                <div style="background-color: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; position: relative;">
-                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem; opacity: 0.1;">${icons.quote}</div>
-                                    <p class="text-slate-300 text-xs italic" style="padding-left: 1.5rem;">
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">案例：迪士尼/光线传媒的“爆发点”</p>
+                                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; position: relative;">
+                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem;">${ICONS.quote}</div>
+                                    <p style="padding-left: 1.5rem; font-size: 0.85rem; font-style: italic; color: var(--text-accent); line-height: 1.5;">
                                         “投资里 99% 的时间是平庸的，1% 决定成败。做保险事业也是如此...只要不下牌桌，等待那个爆发点。”
                                     </p>
                                 </div>
-                                <p class="text-xs font-bold mt-3" style="color: var(--emerald-400); text-align: right;">➔ 钩连：职业选择与长期主义</p>
+                                <div style="text-align: right; margin-top: 1rem; font-size: 0.8rem; font-weight: bold; color: var(--brand-green);">➔ 钩连：职业选择与长期主义</div>
                             </div>
                         </div>
 
-                        <!-- Right: Defense Logic -->
-                        <div class="card flex flex-col justify-between" style="border-left: 4px solid var(--emerald-400);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                    <h3 style="color: var(--text-slate-100); font-weight: 700;">转化逻辑：守富</h3>
-                                    <span style="font-size: 0.7rem; background: var(--bg-slate-700); padding: 2px 6px; rounded: 4px;">Case Study 2</span>
-                                </div>
-                                <p class="text-slate-400 text-xs mb-3">案例：巴菲特的“防御性智慧”</p>
-                                <div style="background-color: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; position: relative;">
-                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem; opacity: 0.1;">${icons.quote}</div>
-                                    <p class="text-slate-300 text-xs italic" style="padding-left: 1.5rem;">
-                                        “中产阶级最大的风险不是赚不到钱，而是守不住钱。保险就是那个让你在危机中依然能睡得着觉的‘防御性资产’。”
-                                    </p>
-                                </div>
+                        <!-- Right Column -->
+                        <div class="card" style="border-top: 4px solid var(--brand-green); height: 100%;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <h3 style="color: #fff; font-size: 1rem;">转化逻辑：守富</h3>
+                                <span class="tag">Case 2</span>
                             </div>
-                            <p class="text-xs font-bold mt-4" style="color: var(--emerald-400); text-align: right;">➔ 钩连：保险产品的必要性</p>
-                        </div>
-                    </div>
-                `
-            },
-            // Slide 5: Humanities (REFACTORED)
-            {
-                title: "支柱二：人文与人性 (30%)",
-                subtitle: "筛选同频人：用高级感建立灵魂共鸣",
-                render: () => `
-                    <div class="grid-desktop h-full">
-                        <!-- Left -->
-                        <div class="flex flex-col gap-6">
-                            <div class="card">
-                                <h3 style="color: var(--amber-400); font-weight: 700; margin-bottom: 0.5rem;">核心素材库</h3>
-                                <p class="text-slate-300 text-sm">历史兴衰、艺术审美、佛学智慧。<br>目的：维持高质量输出，让高知人群觉得“这个人懂我”。</p>
-                            </div>
-
-                            <div class="card" style="border-left: 4px solid var(--rose-400);">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                    <h3 style="color: var(--text-slate-100); font-weight: 700;">转化逻辑：无常与确幸</h3>
-                                    <span style="font-size: 0.7rem; background: var(--bg-slate-700); padding: 2px 6px; rounded: 4px;">Case Study 1</span>
-                                </div>
-                                <p class="text-slate-400 text-xs mb-3">案例：《雪国》或 宋代《秉烛夜游图》</p>
-                                <div style="background-color: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; position: relative;">
-                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem; opacity: 0.1;">${icons.quote}</div>
-                                    <p class="text-slate-300 text-xs italic" style="padding-left: 1.5rem;">
-                                        “古人感叹人生苦短，所以秉烛夜游。而保险本质上，就是为了让我们在无常的生命里，拥有一份确定的心安，从容地享受当下。”
-                                    </p>
-                                </div>
-                                <p class="text-xs font-bold mt-3" style="color: var(--rose-400); text-align: right;">➔ 钩连：保险的情感价值</p>
-                            </div>
-                        </div>
-
-                        <!-- Right -->
-                        <div class="card flex flex-col justify-between" style="border-left: 4px solid var(--rose-400);">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                    <h3 style="color: var(--text-slate-100); font-weight: 700;">转化逻辑：销售心法</h3>
-                                    <span style="font-size: 0.7rem; background: var(--bg-slate-700); padding: 2px 6px; rounded: 4px;">Case Study 2</span>
-                                </div>
-                                <p class="text-slate-400 text-xs mb-3">案例：《心经》与“贪嗔痴”</p>
-                                <div style="background-color: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; position: relative;">
-                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem; opacity: 0.1;">${icons.quote}</div>
-                                    <p class="text-slate-300 text-xs italic" style="padding-left: 1.5rem;">
-                                        “只有放下了对成交的执念（看空），才能真正站在客户角度去精进专业（慈悲）。这也是团队提倡的 **‘不销而销’**。”
-                                    </p>
-                                </div>
-                            </div>
-                            <p class="text-xs font-bold mt-4" style="color: var(--rose-400); text-align: right;">➔ 钩连：团队价值观与招募</p>
-                        </div>
-                    </div>
-                `
-            },
-            // Slide 6: Team & Practice (REFACTORED)
-            {
-                title: "支柱三 & 四：团队与实战",
-                subtitle: "补齐短板：不仅“务虚”，更会“务实”",
-                render: () => `
-                    <div class="grid-desktop h-full">
-                        <!-- Left: Team -->
-                        <div class="card flex flex-col">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                                <div style="padding: 0.5rem; background-color: var(--rose-500-20); color: var(--rose-400); border-radius: 0.5rem;">${icons.users}</div>
-                                <h3 style="font-size: 1.25rem; font-weight: 700;">团队与生活 (20%)</h3>
-                            </div>
-                            
-                            <div style="background-color: var(--bg-slate-900); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                                <h4 style="color: var(--amber-400); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">内容方向</h4>
-                                <ul style="padding-left: 1.2rem; color: var(--text-slate-300); font-size: 0.85rem; line-height: 1.6;">
-                                    <li>高质量读书会现场</li>
-                                    <li>夫妻档的工作日常（展示幸福感）</li>
-                                    <li>高客交流感悟（展示圈层）</li>
-                                </ul>
-                            </div>
-                            
-                            <div style="flex: 1; border-left: 3px solid var(--rose-400); padding-left: 1rem; display: flex; align-items: center;">
-                                <p class="text-slate-400 text-xs italic">
-                                    “很多人问我，为什么你的团队里有银行行长、有企业高管？因为在我们的圈子这里，不仅只是赚世俗的钱，也是滋养灵魂。”
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">案例：巴菲特的“防御性智慧”</p>
+                            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; position: relative; flex: 1;">
+                                <div style="position: absolute; top: 0.5rem; left: 0.5rem;">${ICONS.quote}</div>
+                                <p style="padding-left: 1.5rem; font-size: 0.85rem; font-style: italic; color: var(--text-accent); line-height: 1.5;">
+                                    “中产阶级最大的风险不是赚不到钱，而是守不住钱。保险就是那个让你在危机中依然能睡得着觉的‘防御性资产’。”
                                 </p>
+                            </div>
+                            <div style="text-align: right; margin-top: 1rem; font-size: 0.8rem; font-weight: bold; color: var(--brand-green);">➔ 钩连：保险产品的必要性</div>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        // 5. Content Pillar 2 (Refined Layout)
+        {
+            title: "支柱二：人文与人性 (30%)",
+            subtitle: "筛选同频人：用高级感建立灵魂共鸣",
+            render: () => `
+                <div class="slide-inner">
+                    <div class="grid-layout">
+                        <!-- Left Column -->
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div class="card">
+                                <h3 style="color: var(--brand-gold); margin-bottom: 0.5rem; font-size: 1rem;">核心素材库</h3>
+                                <p style="font-size: 0.9rem; color: var(--text-accent); line-height: 1.5;">历史兴衰、艺术审美、佛学智慧。<br>目的：维持高质量输出，让高知人群觉得“这个人懂我”。</p>
+                            </div>
+
+                            <div class="card" style="flex: 1; border-top: 4px solid var(--brand-pink);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                    <h3 style="color: #fff; font-size: 1rem;">转化逻辑：无常与确幸</h3>
+                                    <span class="tag">Case 1</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">案例：《雪国》或 宋代《秉烛夜游图》</p>
+                                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; position: relative;">
+                                    <div style="position: absolute; top: 0.5rem; left: 0.5rem;">${ICONS.quote}</div>
+                                    <p style="padding-left: 1.5rem; font-size: 0.85rem; font-style: italic; color: var(--text-accent); line-height: 1.5;">
+                                        “古人感叹人生苦短，所以秉烛夜游。而保险本质上，就是为了让我们在无常的生命里，拥有一份确定的心安。”
+                                    </p>
+                                </div>
+                                <div style="text-align: right; margin-top: 1rem; font-size: 0.8rem; font-weight: bold; color: var(--brand-pink);">➔ 钩连：保险的情感价值</div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="card" style="border-top: 4px solid var(--brand-pink); height: 100%;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <h3 style="color: #fff; font-size: 1rem;">转化逻辑：销售心法</h3>
+                                <span class="tag">Case 2</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">案例：《心经》与“贪嗔痴”</p>
+                            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; position: relative; flex: 1;">
+                                <div style="position: absolute; top: 0.5rem; left: 0.5rem;">${ICONS.quote}</div>
+                                <p style="padding-left: 1.5rem; font-size: 0.85rem; font-style: italic; color: var(--text-accent); line-height: 1.5;">
+                                    “只有放下了对成交的执念（看空），才能真正站在客户角度去精进专业（慈悲）。这也是团队提倡的 **‘不销而销’**。”
+                                </p>
+                            </div>
+                            <div style="text-align: right; margin-top: 1rem; font-size: 0.8rem; font-weight: bold; color: var(--brand-pink);">➔ 钩连：团队价值观与招募</div>
+                        </div>
+                    </div>
+                </div>
+            `
+        },
+        // 6. Team & Practice
+        {
+            title: "支柱三 & 四：团队与实战",
+            subtitle: "补齐短板：不仅“务虚”，更会“务实”",
+            render: () => `
+                <div class="slide-inner">
+                    <div class="grid-layout">
+                        <!-- Left: Team -->
+                        <div class="card" style="height: 100%;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+                                <div style="width: 8px; height: 24px; background: var(--brand-pink); border-radius: 4px;"></div>
+                                <h3 style="font-size: 1.1rem; color: #fff;">团队与生活 (20%)</h3>
+                            </div>
+                            
+                            <div style="background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                                <h4 style="color: var(--brand-gold); font-size: 0.9rem; margin-bottom: 0.5rem;">内容方向</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">• 高质量读书会现场<br>• 夫妻档工作日常（展示幸福感）<br>• 高客交流感悟（展示圈层）</p>
+                            </div>
+                            
+                            <div style="flex: 1; border-left: 3px solid var(--brand-pink); padding-left: 1rem; display: flex; align-items: center;">
+                                <p style="font-size: 0.9rem; color: var(--text-accent); font-style: italic; line-height: 1.6;">“很多人问我，为什么你的团队里有银行行长、有企业高管？因为在我们的圈子这里，不仅只是赚世俗的钱，也是滋养灵魂。”</p>
                             </div>
                         </div>
 
                         <!-- Right: Practice -->
-                        <div class="card flex flex-col mt-mobile">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                                <div style="padding: 0.5rem; background-color: var(--blue-500-20); color: var(--blue-400); border-radius: 0.5rem;">${icons.briefcase}</div>
-                                <h3 style="font-size: 1.25rem; font-weight: 700;">实战与方法 (10%)</h3>
+                        <div class="card" style="height: 100%;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+                                <div style="width: 8px; height: 24px; background: var(--brand-blue); border-radius: 4px;"></div>
+                                <h3 style="font-size: 1.1rem; color: #fff;">实战与方法 (10%)</h3>
                             </div>
                             
-                            <div style="background-color: var(--bg-slate-900); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                                <h4 style="color: var(--amber-400); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">内容方向</h4>
-                                <ul style="padding-left: 1.2rem; color: var(--text-slate-300); font-size: 0.85rem; line-height: 1.6;">
-                                    <li>解决复杂的家族信托问题</li>
-                                    <li>2分钟讲清楚降息对钱包的影响</li>
-                                    <li>分析一份糟糕的保单（不点名）</li>
-                                </ul>
+                            <div style="background: var(--bg-card); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                                <h4 style="color: var(--brand-gold); font-size: 0.9rem; margin-bottom: 0.5rem;">内容方向</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">• 解决复杂的家族信托问题<br>• 2分钟讲清楚降息对钱包的影响<br>• 分析一份糟糕的保单（不点名）</p>
                             </div>
                             
-                            <div style="flex: 1; border-left: 3px solid var(--blue-400); padding-left: 1rem; display: flex; align-items: center;">
-                                <p class="text-slate-400 text-xs italic">
-                                    “所谓专业，不是堆砌术语，而是用最简单的逻辑，解决最复杂的问题。这就是我们团队的‘极简专业主义’。”
-                                </p>
+                            <div style="flex: 1; border-left: 3px solid var(--brand-blue); padding-left: 1rem; display: flex; align-items: center;">
+                                <p style="font-size: 0.9rem; color: var(--text-accent); font-style: italic; line-height: 1.6;">“所谓专业，不是堆砌术语，而是用最简单的逻辑，解决最复杂的问题。这就是我们团队的‘极简专业主义’。”</p>
                             </div>
                         </div>
                     </div>
-                `
-            },
-            // Slide 7: Recruitment Logic (REFACTORED)
-            {
-                title: "招募逻辑：全方位围猎",
-                subtitle: "如何通过IP设计，让高质量人才主动加入？",
-                render: () => `
-                    <div class="flex flex-col h-full">
-                        <!-- Funnel Steps -->
-                        <div class="grid-3-col w-full grid-desktop mb-8">
-                            <div class="card" style="text-align: center; border-top: 4px solid var(--amber-500);">
-                                <div class="step-number">1</div>
-                                <h4 style="font-weight: 700; margin-bottom: 0.5rem;">筛选 (Filter)</h4>
-                                <p class="text-xs text-slate-400">通过《金钱的艺术》、宏观经济等高门槛内容，<strong class="text-amber-500">自动过滤</strong>掉急功近利的人。</p>
-                            </div>
-                            <div class="card" style="text-align: center; border-top: 4px solid var(--amber-500);">
-                                <div class="step-number">2</div>
-                                <h4 style="font-weight: 700; margin-bottom: 0.5rem;">吸引 (Attract)</h4>
-                                <p class="text-xs text-slate-400">通过“长期主义”、“把保险当公司经营”，<strong class="text-amber-500">击中</strong>想转型高知人群的痛点。</p>
-                            </div>
-                            <div class="card" style="text-align: center; border-top: 4px solid var(--amber-500);">
-                                <div class="step-number">3</div>
-                                <h4 style="font-weight: 700; margin-bottom: 0.5rem;">转化 (Convert)</h4>
-                                <p class="text-xs text-slate-400">通过展示“TOT结果”和“百人团队”，<strong class="text-amber-500">消除</strong>他们对收入的顾虑。</p>
-                            </div>
+                </div>
+            `
+        },
+        // 7. Recruitment
+        {
+            title: "招募逻辑：全方位围猎",
+            subtitle: "如何通过IP设计，让高质量人才主动加入？",
+            render: () => `
+                <div class="slide-inner">
+                    <!-- Steps Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;" class="grid-layout">
+                        <div class="card" style="text-align: center; border-top: 3px solid var(--brand-gold);">
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--bg-card); -webkit-text-stroke: 1px var(--brand-gold); opacity: 0.5;">01</div>
+                            <h4 style="color: #fff; margin-bottom: 0.5rem;">筛选 (Filter)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">通过高认知内容，自动过滤掉急功近利的人。</p>
                         </div>
-
-                        <!-- Bottom Quote Area -->
-                        <div class="card w-full flex items-center justify-between" style="background: linear-gradient(to right, var(--bg-slate-800), #0f172a); border: 1px solid var(--bg-slate-700);">
-                            <div>
-                                <h3 style="font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem;">给 IP 的建议：</h3>
-                                <p class="text-slate-300 italic" style="max-width: 42rem; line-height: 1.75; font-size: 1.1rem;">
-                                    “Kevin 的招募对象，不是为了底薪而来的人。他们是为了寻找一个<span style="color: var(--amber-500); font-weight: bold;">精神导师</span>，寻找一种<span style="color: var(--amber-500); font-weight: bold;">有尊严的赚钱方式</span>。<br/><br/>聪明人，也可以用体面的方式，赢取财富。”
-                                </p>
-                            </div>
-                            <div class="hidden-mobile" style="opacity: 0.1; color: var(--amber-500); transform: scale(1.5);">
-                                ${icons.target}
-                            </div>
+                        <div class="card" style="text-align: center; border-top: 3px solid var(--brand-gold);">
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--bg-card); -webkit-text-stroke: 1px var(--brand-gold); opacity: 0.5;">02</div>
+                            <h4 style="color: #fff; margin-bottom: 0.5rem;">吸引 (Attract)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">用“长期主义”击中高知人群想转型的痛点。</p>
+                        </div>
+                        <div class="card" style="text-align: center; border-top: 3px solid var(--brand-gold);">
+                            <div style="font-size: 2rem; font-weight: 900; color: var(--bg-card); -webkit-text-stroke: 1px var(--brand-gold); opacity: 0.5;">03</div>
+                            <h4 style="color: #fff; margin-bottom: 0.5rem;">转化 (Convert)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">展示TOT结果和团队，消除对收入的顾虑。</p>
                         </div>
                     </div>
-                `
-            },
-            // Slide 8: Power Couple (REFACTORED)
-            {
-                title: "夫妻档：1+1 > 2",
-                subtitle: "全域覆盖：理性与感性的完美闭环",
-                render: () => `
-                    <div class="flex flex-col items-center justify-center h-full">
-                        <div style="width: 100%; max-width: 56rem; position: relative;">
-                            
-                            <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(244, 63, 94, 0.1), rgba(96, 165, 250, 0.1)); border-radius: 1rem; filter: blur(20px);"></div>
-                            
-                            <div class="grid-3-col grid-desktop items-center relative z-10">
-                                <!-- Wife Card -->
-                                <div class="card text-center" style="border-top: 4px solid var(--rose-400);">
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--rose-400); margin-bottom: 0.5rem;">Lina (TOT)</div>
-                                    <div class="text-slate-300 text-sm flex flex-col gap-2">
-                                        <p>感性、温暖、生活</p>
-                                        <p>吸引宝妈、职场人</p>
-                                        <p>解决“能不能做”</p>
-                                    </div>
-                                </div>
 
-                                <!-- Center Icon -->
-                                <div class="flex flex-col items-center justify-center rotate-mobile">
-                                    <div style="width: 3.5rem; height: 3.5rem; background: linear-gradient(135deg, var(--amber-500), var(--amber-600)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 1.5rem; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">+</div>
-                                    <p class="text-amber-400 font-serif italic text-lg mt-4 hidden-mobile">全域覆盖</p>
-                                </div>
+                    <!-- Bottom Quote -->
+                    <div class="card" style="margin-top: auto; background: linear-gradient(to right, var(--bg-card-lighter), rgba(15, 23, 42, 0.8)); border-color: var(--border-color);">
+                        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; display: inline-block;">给 IP 的建议</h3>
+                        <p style="font-size: 1rem; font-style: italic; color: var(--text-accent); line-height: 1.8;">
+                            “Kevin 的招募对象，不是为了底薪而来的人。他们是为了寻找一个<span style="color: var(--brand-gold);">精神导师</span>，寻找一种<span style="color: var(--brand-gold);">有尊严的赚钱方式</span>。聪明人，也可以用体面的方式，赢取财富。”
+                        </p>
+                    </div>
+                </div>
+            `
+        },
+        // 8. Power Couple (Fixed Layout)
+        {
+            title: "夫妻档：1+1 > 2",
+            subtitle: "全域覆盖：理性与感性的完美闭环",
+            render: () => `
+                <div class="slide-inner" style="justify-content: center;">
+                    <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
+                        
+                        <!-- BG Glow -->
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; background: radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 70%); pointer-events: none;"></div>
 
-                                <!-- Husband Card -->
-                                <div class="card text-center" style="border-top: 4px solid var(--blue-400);">
-                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--blue-400); margin-bottom: 0.5rem;">Kevin (军师)</div>
-                                    <div class="text-slate-300 text-sm flex flex-col gap-2">
-                                        <p>理性、宏观、逻辑</p>
-                                        <p>吸引男性、高知精英</p>
-                                        <p>解决“值不值得做”</p>
-                                    </div>
-                                </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;" class="mobile-stack">
+                            
+                            <!-- Wife -->
+                            <div class="card mobile-full" style="flex: 1; text-align: center; border-top: 4px solid var(--brand-pink);">
+                                <h3 style="font-size: 1.2rem; color: var(--brand-pink); margin-bottom: 0.5rem;">Lina (TOT)</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">感性、温暖、生活<br>吸引宝妈、职场人<br>解决“能不能做”</p>
                             </div>
 
-                            <!-- Bottom Summary -->
-                            <div class="card mt-8 text-center relative z-10" style="background-color: rgba(15, 23, 42, 0.8); border: 1px solid var(--amber-900-20);">
-                                <h4 class="text-amber-400 font-bold mb-2">互为公域，互为私域</h4>
-                                <p class="text-slate-300 text-sm" style="line-height: 1.6;">
-                                    Lina 的粉丝如果觉得内容太软，推给先生看干货；<br class="hidden-mobile">
-                                    Kevin 的粉丝如果觉得内容太硬，推给太太看生活。
-                                </p>
+                            <!-- Plus Icon (Non-overlapping) -->
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; flex-shrink: 0;" class="plus-icon-container">
+                                <div style="width: 40px; height: 40px; background: var(--brand-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 1.2rem; box-shadow: 0 0 20px rgba(245,158,11,0.4);">+</div>
+                                <div style="font-size: 0.7rem; color: var(--brand-gold); margin-top: 8px; white-space: nowrap;" class="mobile-hide">全域覆盖</div>
+                            </div>
+
+                            <!-- Husband -->
+                            <div class="card mobile-full" style="flex: 1; text-align: center; border-top: 4px solid var(--brand-blue);">
+                                <h3 style="font-size: 1.2rem; color: var(--brand-blue); margin-bottom: 0.5rem;">Kevin (军师)</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">理性、宏观、逻辑<br>吸引男性、高知精英<br>解决“值不值得做”</p>
                             </div>
                         </div>
+
+                        <!-- Summary -->
+                        <div class="card" style="margin-top: 2rem; text-align: center; border: 1px solid var(--brand-gold-dim); background: rgba(15,23,42,0.6);">
+                            <h4 style="color: var(--brand-gold); margin-bottom: 0.5rem;">互为公域，互为私域</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">Lina 的粉丝若觉内容太软 → 推给先生看干货<br>Kevin 的粉丝若觉内容太硬 → 推给太太看生活</p>
+                        </div>
                     </div>
-                `
-            }
-        ];
+                </div>
+            `
+        }
+    ];
 
-        document.addEventListener('DOMContentLoaded', () => {
-            let currentIndex = 0;
-            const slideContainer = document.getElementById('slide-container');
-            const headerTitle = document.getElementById('header-title');
-            const headerSubtitle = document.getElementById('header-subtitle');
-            const dotsContainer = document.getElementById('dots-container');
-            const btnPrev = document.getElementById('btn-prev');
-            const btnNext = document.getElementById('btn-next');
-            const app = document.getElementById('app');
+    // --- Logic ---
+    let currentIndex = 0;
+    const titleEl = document.getElementById('slide-title');
+    const subtitleEl = document.getElementById('slide-subtitle');
+    const viewportEl = document.getElementById('viewport');
+    const dotsEl = document.getElementById('dots');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-            // 初始化
-            slides.forEach((_, index) => {
-                const dot = document.createElement('div');
-                dot.className = `dot ${index === 0 ? 'active' : ''}`;
-                dotsContainer.appendChild(dot);
-            });
-
-            function renderSlide(index) {
-                const slide = slides[index];
-                headerTitle.textContent = slide.title;
-                headerSubtitle.textContent = slide.subtitle;
-                slideContainer.innerHTML = `<div class="fade-in h-full">${slide.render()}</div>`;
-                
-                const dots = document.querySelectorAll('.dot');
-                dots.forEach((dot, idx) => {
-                    dot.classList.toggle('active', idx === index);
-                });
-            }
-
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % slides.length;
-                renderSlide(currentIndex);
-            }
-
-            function prevSlide() {
-                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-                renderSlide(currentIndex);
-            }
-
-            btnPrev.addEventListener('click', prevSlide);
-            btnNext.addEventListener('click', nextSlide);
-
-            // 手势控制
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            app.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            app.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            });
-
-            function handleSwipe() {
-                const threshold = 50; 
-                if (touchEndX < touchStartX - threshold) nextSlide();
-                if (touchEndX > touchStartX + threshold) prevSlide();
-            }
-
-            // 键盘控制
-            document.addEventListener('keydown', (e) => {
-                if(e.key === 'ArrowRight') nextSlide();
-                if(e.key === 'ArrowLeft') prevSlide();
-            });
-
-            renderSlide(0);
+    function init() {
+        // Create dots
+        SLIDES.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = `dot ${i === 0 ? 'active' : ''}`;
+            dotsEl.appendChild(d);
         });
-    </script>
+
+        render(0);
+
+        prevBtn.onclick = () => go(-1);
+        nextBtn.onclick = () => go(1);
+
+        // Touch Swipe
+        let tx = 0;
+        document.getElementById('app').addEventListener('touchstart', e => tx = e.touches[0].clientX);
+        document.getElementById('app').addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - tx;
+            if (Math.abs(dx) > 50) go(dx > 0 ? -1 : 1);
+        });
+        
+        // Keyboard
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') go(-1);
+            if (e.key === 'ArrowRight') go(1);
+        });
+    }
+
+    function go(dir) {
+        let nextIndex = currentIndex + dir;
+        if (nextIndex < 0) nextIndex = SLIDES.length - 1;
+        if (nextIndex >= SLIDES.length) nextIndex = 0;
+        render(nextIndex);
+    }
+
+    function render(index) {
+        currentIndex = index;
+        const slide = SLIDES[index];
+        
+        // Update Header
+        titleEl.textContent = slide.title;
+        subtitleEl.textContent = slide.subtitle;
+
+        // Update Content with Animation
+        viewportEl.innerHTML = `<div class="fade-in" style="height: 100%;">${slide.render()}</div>`;
+
+        // Update UI State
+        Array.from(dotsEl.children).forEach((d, i) => {
+            d.classList.toggle('active', i === index);
+        });
+    }
+
+    init();
+</script>
 </body>
 </html>
